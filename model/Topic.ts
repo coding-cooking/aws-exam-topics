@@ -23,7 +23,7 @@ const OptionSchema = new Schema({
 });
 
 const TopicSchema = new Schema({
-	id: {
+	topicId: {
 		type: String,
 		required: true,
 	},
@@ -51,8 +51,11 @@ type Option = {
 type Options = Record<string, Option>; 
 
 type QuestionData = {
-	id: string; 
+	topicId: string; 
 	question: Question; 
 	options: Options;
 	correctAnswers: string[];
 };
+
+const Topic = models.Topic || model("Topic", TopicSchema);
+export default Topic;

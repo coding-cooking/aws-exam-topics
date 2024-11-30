@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import dotenv from "dotenv";
+dotenv.config();
 
 export default function Home() {
   return (
