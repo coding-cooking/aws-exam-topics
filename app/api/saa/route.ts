@@ -5,7 +5,6 @@ import { dbConnect } from "@/utils/dbConnect";
 export async function GET(request: Request) {
     try {
         await dbConnect();
-        console.log('get get')
         
         const topics = await Topic.find({}).lean().exec();
 

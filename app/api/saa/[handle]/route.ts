@@ -4,14 +4,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = 'force-static';
 
-export async function GET(req: NextRequest, { params }: { params: { handle: string } }) {
-    if (!params?.handle) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ handle: string }> } ) {
+    const { handle } = await params;
+
+    if (!(await params).handle) {
         return NextResponse.json({ message: 'Handle parameter is required!' }, { status: 404 });
     }
 
     await dbConnect();
 
-    const topic = await Topic.findOne({ handle: params.handle }).exec();
+    const topic = await Topic.findOne({ topicId: handle}).exec();
 
     // Set cache control headers
     const response = NextResponse.json(topic, { status: 200 });

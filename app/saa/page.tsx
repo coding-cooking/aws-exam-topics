@@ -11,7 +11,6 @@ export default function SaaPage() {
             try {
                 const res = await fetch(`/api/saa`);
                 const data = await res.json();
-                console.log(data)
                 setTopics(data);
             } catch (error) {
                 console.error('Error fetching topics:', error);
