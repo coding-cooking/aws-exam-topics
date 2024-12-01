@@ -50,7 +50,8 @@ type Option = {
 
 type Options = Record<string, Option>; 
 
-type QuestionData = {
+export type TopicType = {
+	_id: string;
 	topicId: string; 
 	question: Question; 
 	options: Options;
