@@ -2,18 +2,17 @@
 
 import { TopicType } from "@/model/Topic";
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 
 type TopicTemplateProps = {
     topic: TopicType;
 }
 export default function TopicTemplate({ topic }: TopicTemplateProps) {
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-    useEffect(() => {
-        console.log('selectedOptions:', selectedOptions);
-    }, [selectedOptions]);
+    const [submitted, setSubmitted] = useState<boolean>(false);
 
-    const handleClick = useCallback((option: string) => {
+    const handleClick = (e: React.FormEvent, option: string) => {
+        e.preventDefault();
         if (topic.correctAnswers.length > 1) {
             setSelectedOptions((prevOptions) => {
                 if (prevOptions.includes(option)) {
@@ -27,14 +26,12 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
         } else {
             setSelectedOptions([option])
         }
-    }, [topic.correctAnswers.length])
+    }
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-
-
+        setSubmitted(true)
     }
-
 
     return (
         <div className="w-3/5 h-screen flex flex-col items-center mx-auto my-4">
@@ -46,28 +43,29 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
                         <label
                             key={`${key}-${value}`}
                             className={`block flex gap-2 my-2 p-3 cursor-pointer
-                            ${selectedOptions.includes(key) ? 'bg-blue-200' : 'hover:bg-blue-100'}
-                            ${selectedOptions.length === 1 &&
+                            ${selectedOptions.includes(key) ? 'text-slate-950 bg-blue-200' : 'hover:bg-slate-400 hover:text-slate-950'}
+                            ${topic.correctAnswers.length === 1 &&
                                     selectedOptions[0] === key &&
                                     topic.correctAnswers.includes(key)
-                                    ? 'bg-emerald-400 text-slate-100'
-                                    : selectedOptions.length === 1 &&
+                                    ? 'bg-emerald-400 text-slate-950'
+                                    : topic.correctAnswers.length === 1 &&
                                         selectedOptions[0] !== key &&
                                         topic.correctAnswers.includes(key)
-                                        ? 'bg-emerald-400 text-slate-100'
-                                        : selectedOptions.length === 1 &&
+                                        ? 'bg-emerald-400 text-slate-950'
+                                        : topic.correctAnswers.length === 1 &&
                                             selectedOptions[0] == key &&
                                             !topic.correctAnswers.includes(key)
-                                            ? 'bg-red-300 text-slate-100'
+                                            ? 'bg-red-300 text-slate-950'
                                             : ''
                                 }
+                            ${submitted && topic.correctAnswers.length > 1 && topic.correctAnswers.includes(key) ? 'bg-emerald-400 text-slate-950' : submitted && topic.correctAnswers.length > 1 && !topic.correctAnswers.includes(key) && selectedOptions.includes(key) ? 'bg-red-300 text-slate-950' : ''}
                             `}
-                            onClick={() => { handleClick(key) }}
+                            onClick={(e) => { handleClick(e, key) }}
                         >
                             <input type={topic.correctAnswers.length > 1 ? 'checkbox' : 'radio'}
                                 name={topic.correctAnswers.length > 1 ? 'options[]' : 'options'}
                                 value={key}
-                            // className="hidden"
+                                className="hidden"
                             />
                             <div>{key}.</div>
                             <div>
@@ -79,12 +77,13 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
                         </label>
                     )
                 }
+                {topic.correctAnswers.length > 1 && (
+                    <button type="submit" className="block mx-auto my-4 bg-blue-500 text-white px-4 py-2 rounded">
+                        Submit
+                    </button>
+                )}
             </form>
-            {topic.correctAnswers.length > 1 && (
-                <button type="submit" className="my-4 bg-blue-500 text-white px-4 py-2 rounded">
-                    Submit
-                </button>
-            )}
+
         </div >
     )
 }
