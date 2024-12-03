@@ -2,29 +2,36 @@
 
 import { TopicType } from "@/model/Topic";
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 type TopicTemplateProps = {
     topic: TopicType;
 }
 export default function TopicTemplate({ topic }: TopicTemplateProps) {
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+    useEffect(() => {
+        console.log('selectedOptions:', selectedOptions);
+    }, [selectedOptions]);
 
-    function handleClick(option: string) {
+    const handleClick = useCallback((option: string) => {
         if (topic.correctAnswers.length > 1) {
             setSelectedOptions((prevOptions) => {
                 if (prevOptions.includes(option)) {
+                    console.log('haha')
                     return prevOptions.filter((opt) => opt !== option);
                 } else {
-                    return [...prevOptions, option]
+                    console.log('hehe')
+                    return [...prevOptions, option];
                 }
             })
         } else {
             setSelectedOptions([option])
         }
-    }
+    }, [topic.correctAnswers.length])
 
-    function handleSubmit() {
+    function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+
 
     }
 
@@ -39,19 +46,19 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
                         <label
                             key={`${key}-${value}`}
                             className={`block flex gap-2 my-2 p-3 cursor-pointer
-                            ${selectedOptions.includes(key) ? 'bg-blue-200' : 'transparent'}
+                            ${selectedOptions.includes(key) ? 'bg-blue-200' : 'hover:bg-blue-100'}
                             ${selectedOptions.length === 1 &&
                                     selectedOptions[0] === key &&
                                     topic.correctAnswers.includes(key)
-                                    ? 'border-green-500 border-solid border-2'
+                                    ? 'bg-emerald-400 text-slate-100'
                                     : selectedOptions.length === 1 &&
                                         selectedOptions[0] !== key &&
                                         topic.correctAnswers.includes(key)
-                                        ? 'border-green-500 border-solid border-2'
+                                        ? 'bg-emerald-400 text-slate-100'
                                         : selectedOptions.length === 1 &&
                                             selectedOptions[0] == key &&
                                             !topic.correctAnswers.includes(key)
-                                            ? 'border-red-500 border-solid border-2'
+                                            ? 'bg-red-300 text-slate-100'
                                             : ''
                                 }
                             `}

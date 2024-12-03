@@ -12,11 +12,11 @@ export async function generateStaticParams() {
 
     if (!topics || topics.length === 0) {
         return [];
+    } else {
+        return topics.map((topic) => ({
+            handle: topic.topicId,
+        }))
     }
-
-    return topics.map((topic) => ({
-        handle: topic.topicId,
-    }))
 }
 
 export default async function TopicPage({ params }: { params: { handle: string } }) {
