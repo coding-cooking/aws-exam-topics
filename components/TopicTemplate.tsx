@@ -16,10 +16,8 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
         if (topic.correctAnswers.length > 1) {
             setSelectedOptions((prevOptions) => {
                 if (prevOptions.includes(option)) {
-                    console.log('haha')
                     return prevOptions.filter((opt) => opt !== option);
                 } else {
-                    console.log('hehe')
                     return [...prevOptions, option];
                 }
             })
@@ -43,12 +41,13 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
                         <label
                             key={`${key}-${value}`}
                             className={`block flex gap-2 my-2 p-3 cursor-pointer
-                            ${selectedOptions.includes(key) ? 'text-slate-950 bg-blue-200' : 'hover:bg-slate-400 hover:text-slate-950'}
+                            ${selectedOptions.includes(key) ? 'text-slate-950 bg-blue-200' : 'hover:bg-blue-200 hover:text-slate-950'}
                             ${topic.correctAnswers.length === 1 &&
                                     selectedOptions[0] === key &&
                                     topic.correctAnswers.includes(key)
                                     ? 'bg-emerald-400 text-slate-950'
                                     : topic.correctAnswers.length === 1 &&
+                                        selectedOptions.length !== 0 &&
                                         selectedOptions[0] !== key &&
                                         topic.correctAnswers.includes(key)
                                         ? 'bg-emerald-400 text-slate-950'
@@ -58,7 +57,8 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
                                             ? 'bg-red-300 text-slate-950'
                                             : ''
                                 }
-                            ${submitted && topic.correctAnswers.length > 1 && topic.correctAnswers.includes(key) ? 'bg-emerald-400 text-slate-950' : submitted && topic.correctAnswers.length > 1 && !topic.correctAnswers.includes(key) && selectedOptions.includes(key) ? 'bg-red-300 text-slate-950' : ''}
+                            ${topic.correctAnswers.length > 1 && submitted && topic.correctAnswers.includes(key) ? 'bg-emerald-400 text-slate-950' : topic.correctAnswers.length > 1 && submitted && !topic.correctAnswers.includes(key) && selectedOptions.includes(key) ? 'bg-red-300 text-slate-950' : ''}
+
                             `}
                             onClick={(e) => { handleClick(e, key) }}
                         >
