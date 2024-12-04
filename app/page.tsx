@@ -1,7 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import dotenv from "dotenv";
+import { Metadata } from "next";
 dotenv.config();
+
+export const metadata: Metadata = {
+  title: "AWS Exam Topics",
+  description: "Try this website and get AWS Certificates",
+};
+
 
 export default function Home() {
   return (

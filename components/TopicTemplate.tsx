@@ -1,9 +1,9 @@
 'use client'
 
-import { TopicType } from "@/model/Topic";
+import TopicsContext, { TopicType } from "@/context/TopicsContext";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 type TopicTemplateProps = {
     topic: TopicType;
@@ -11,6 +11,7 @@ type TopicTemplateProps = {
 export default function TopicTemplate({ topic }: TopicTemplateProps) {
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const [submitted, setSubmitted] = useState<boolean>(false);
+    const topics: TopicType[] = useContext(TopicsContext)
 
     const handleClick = (e: React.FormEvent, option: string) => {
         e.preventDefault();
@@ -90,9 +91,10 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
                     )}
                 </form>
             </div >
-            <Link href={`/saa/${Number(topic.topicId) + 1}`}>
+            {(Number(topic.topicId) !== topics.length) && (<Link href={`/saa/${Number(topic.topicId) + 1}`}>
                 <Image src='/nextIcon.svg' alt='next one' width={60} height={60} />
-            </Link>
+            </Link>)}
+
         </div >
 
     )

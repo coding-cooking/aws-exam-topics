@@ -1,23 +1,11 @@
 'use client'
 
-import { TopicType } from "@/model/Topic";
+import TopicsContext, { TopicType } from "@/context/TopicsContext";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 export default function SaaPage() {
-    const [topics, setTopics] = useState<TopicType[]>([]);
-    useEffect(() => {
-        const fetchTopics = async () => {
-            try {
-                const res = await fetch(`/api/saa`);
-                const data = await res.json();
-                setTopics(data);
-            } catch (error) {
-                console.error('Error fetching topics:', error);
-            }
-        }
-        fetchTopics()
-    }, [])
+    const topics: TopicType[] = useContext(TopicsContext)
 
     return (
         <div className="flex items-start justify-start gap-8 px-4 py-6 font-[family-name:var(--font-geist-sans)]">
