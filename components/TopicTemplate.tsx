@@ -39,7 +39,8 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
                 <Image src='/prevIcon.svg' alt='prev one' width={60} height={60} />
             </Link>)}
 
-            <div className="w-4/5 md:w-3/5 h-screen flex flex-col items-center mx-auto my-4">
+            <div className="w-4/5 md:w-3/5 h-screen flex flex-col items-start mx-auto my-4">
+                <p className="text-lg">Question {topic.topicId}</p>
                 <p className="my-4">{topic.question.questionContent}</p>
                 {topic.question.questionImage && (<Image src={topic.question.questionImage} alt={'question image'} width={100} height={100} />)}
                 <form onSubmit={handleSubmit}>
