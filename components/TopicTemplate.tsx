@@ -35,9 +35,10 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
 
     return (
         <div className="w-full h-full flex justify-center items-center">
-            {Number(topic.topicId) > 1 && (<Link href={`/saa/${Number(topic.topicId) - 1}`}>
-                <Image src='/prevIcon.svg' alt='prev one' width={60} height={60} />
-            </Link>)}
+            {Number(topic.topicId) > 1 && (
+                <Link href={`/saa/${Number(topic.topicId) - 1}`} className="md:p-3 hover:bg-teal-200 hover:bg-contain">
+                    <Image src='/prevIcon.svg' alt='prev one' width={60} height={60} />
+                </Link>)}
 
             <div className="w-4/5 md:w-3/5 h-screen flex flex-col items-start mx-auto my-4">
                 <p className="text-lg">Question {topic.topicId}</p>
@@ -92,9 +93,10 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
                     )}
                 </form>
             </div >
-            {(Number(topic.topicId) !== topics.length) && (<Link href={`/saa/${Number(topic.topicId) + 1}`}>
-                <Image src='/nextIcon.svg' alt='next one' width={60} height={60} />
-            </Link>)}
+            {(Number(topic.topicId) !== topics.length) && (
+                <Link href={`/saa/${Number(topic.topicId) + 1}`} className="md:p-3 hover:bg-teal-200 hover:bg-contain">
+                    <Image src='/nextIcon.svg' alt='next one' width={60} height={60} />
+                </Link>)}
 
         </div >
 
