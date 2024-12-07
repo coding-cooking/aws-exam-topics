@@ -1,5 +1,5 @@
 import TopicTemplate from "@/components/TopicTemplate";
-import { TopicType } from "@/model/Topic";
+import { TopicType } from "@/context/TopicsContext";
 import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {

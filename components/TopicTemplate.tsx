@@ -8,6 +8,7 @@ import { useContext, useState } from "react";
 type TopicTemplateProps = {
     topic: TopicType;
 }
+
 export default function TopicTemplate({ topic }: TopicTemplateProps) {
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const [submitted, setSubmitted] = useState<boolean>(false);
@@ -50,7 +51,7 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
                             <label
                                 key={`${key}-${value}`}
                                 className={`block flex gap-2 my-2 p-3 cursor-pointer
-                            ${selectedOptions.includes(key) ? 'text-slate-950 bg-blue-200' : 'hover:bg-blue-200 hover:text-slate-950'}
+                            ${selectedOptions.includes(key) ? 'text-slate-950 bg-sky-400' : 'hover:bg-sky-400 hover:text-slate-950'}
                             ${topic.correctAnswers.length === 1 &&
                                         selectedOptions[0] === key &&
                                         topic.correctAnswers.includes(key)

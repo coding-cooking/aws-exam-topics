@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import TopicsContext, { TopicType } from "@/context/TopicsContext";
 import { useEffect, useState } from "react";
+import Nav from "@/components/Nav";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -23,10 +24,11 @@ export default function RootLayout({
 }>) {
 
   const [topics, setTopics] = useState<TopicType[]>([]);
+
   useEffect(() => {
     const fetchTopics = async () => {
       try {
-        const res = await fetch(`/api/saa`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/saa`);
         const data = await res.json();
         setTopics(data);
       } catch (error) {
@@ -42,6 +44,7 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
+          <Nav />
           {children}
         </body>
       </TopicsContext.Provider>
