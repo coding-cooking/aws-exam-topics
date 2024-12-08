@@ -1,28 +1,12 @@
 'use client'
 
-import localFont from "next/font/local";
 import "./globals.css";
 import TopicsContext, { TopicType } from "@/context/TopicsContext";
 import { useEffect, useState } from "react";
 import Nav from "@/components/Nav";
+import Provider, { ProviderProps } from "@/context/Provider";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-
+export default function RootLayout({ children, session }: ProviderProps) {
   const [topics, setTopics] = useState<TopicType[]>([]);
 
   useEffect(() => {
@@ -41,11 +25,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <TopicsContext.Provider value={topics}>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          <Nav />
-          {children}
+        <body>
+          <Provider session={session}>
+            <Nav />
+            {children}
+          </Provider>
         </body>
       </TopicsContext.Provider>
 

@@ -20,7 +20,21 @@ const UserSchema = new Schema({
     },
     provider: {
         type: String,
+    },
+    subscriptionTypes: {
+        type: [String],
+        default: [],
+        required: true,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    subscribedAt: {
+        type: Date,
+        default: Date.now
     }
+
 });
 
 export type UserType = {
@@ -30,6 +44,9 @@ export type UserType = {
     image?: string;
     password: string;
     provider?: string;
+    subscriptionTypes: string[];
+    createdAt: Date;
+    subscribedAt?: Date;
 }
 
 const User = models.User || model("User", UserSchema);
