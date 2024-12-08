@@ -46,7 +46,6 @@ export type UserType = {
     provider?: string;
     subscriptionTypes: string[];
     createdAt: Date;
-    subscribedAt?: Date;
 }
 
 const User = models.User || model("User", UserSchema);
