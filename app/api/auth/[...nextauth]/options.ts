@@ -4,7 +4,7 @@ import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import { Profile as DefaultProfile } from "next-auth";
-import { Account, Profile, User as NextAuthUser } from "next-auth";
+import { Account, User as NextAuthUser } from "next-auth";
 import { AdapterUser } from "next-auth/adapters";
 
 interface CustomProfile extends DefaultProfile {
@@ -59,14 +59,16 @@ export const options: NextAuthOptions = {
                             profileImage = profile.picture;
                         }
                     }
-                    return await User.create({
-                        email: profile.email,
-                        username: profile.name?.replace(" ", "").toLowerCase(),
-                        image: profileImage,
-                        provider: account.provider,
-                        subscriptionTypes: [],
-                        createdAt: Date.now(),
-                    });
+                    if (!userExists) {
+                        return await User.create({
+                            email: profile.email,
+                            username: profile.name?.replace(" ", "").toLowerCase(),
+                            image: profileImage,
+                            provider: account.provider,
+                            subscriptionTypes: [],
+                            createdAt: Date.now(),
+                        });
+                    }
                     return true;
                 } catch (error: any) {
                     console.log("Error checking if user exists: ", error.message);

@@ -30,11 +30,6 @@ const UserSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    subscribedAt: {
-        type: Date,
-        default: Date.now
-    }
-
 });
 
 export type UserType = {
