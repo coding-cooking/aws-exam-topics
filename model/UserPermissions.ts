@@ -15,10 +15,12 @@ const UserPermissionsSchema = new Schema({
     }
 });
 
+type TopicTypes = 'SAA' | 'Dop' | 'SAP' | 'SOA';
+
 export type UserPermissionsType = {
     _id: string;
     userId: string;
-    topicType: string;
+    topicType: TopicTypes;
     purchasedAt: Date;
 }
 

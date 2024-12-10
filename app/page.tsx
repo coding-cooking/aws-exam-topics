@@ -16,39 +16,9 @@ export default function Home() {
           SAA
         </div>
       </Link>
-      <Link href="/saa">
+      <Link href="/incorrect">
         <div className="w-32 h-32 flex justify-center items-center border border-1 rounded-xl">
-          SAA
-        </div>
-      </Link>
-      <Link href="/saa">
-        <div className="w-32 h-32 flex justify-center items-center border border-1 rounded-xl">
-          SAA
-        </div>
-      </Link>
-      <Link href="/saa">
-        <div className="w-32 h-32 flex justify-center items-center border border-1 rounded-xl">
-          SAA
-        </div>
-      </Link>
-      <Link href="/saa">
-        <div className="w-32 h-32 flex justify-center items-center border border-1 rounded-xl">
-          SAA
-        </div>
-      </Link>
-      <Link href="/saa">
-        <div className="w-32 h-32 flex justify-center items-center border border-1 rounded-xl">
-          SAA
-        </div>
-      </Link>
-      <Link href="/saa">
-        <div className="w-32 h-32 flex justify-center items-center border border-1 rounded-xl">
-          SAA
-        </div>
-      </Link>
-      <Link href="/saa">
-        <div className="w-32 h-32 flex justify-center items-center border border-1 rounded-xl">
-          SAA
+          Incorrect Topics
         </div>
       </Link>
     </div>
