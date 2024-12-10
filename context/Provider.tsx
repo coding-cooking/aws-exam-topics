@@ -10,6 +10,7 @@ export type ProviderProps = {
             email: string;
             image: string;
             id: string;
+            role: string;
         };
         expires: string;
     };

@@ -1,4 +1,4 @@
-import User from "@/model/User";
+import User, { UserType } from "@/model/User";
 import { dbConnect } from "@/utils/dbConnect";
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
@@ -26,6 +26,16 @@ export const options: NextAuthOptions = {
         strategy: 'jwt',
     },
     callbacks: {
+        async session({ session }) {
+            if (session.user) {
+                const sessionUser: UserType | null = await User.findOne({ email: session.user.email });
+                if (sessionUser) {
+                    session.user.id = sessionUser._id.toString();
+                    session.user.username = sessionUser.username;
+                }
+            }
+            return session;
+        },
         async signIn({
             account,
             profile,
