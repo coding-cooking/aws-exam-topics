@@ -23,7 +23,7 @@ export const options: NextAuthOptions = {
         })
     ],
     session: {
-        strategy: 'jwt',
+        strategy: "database",
     },
     callbacks: {
         async session({ session }) {
@@ -32,6 +32,7 @@ export const options: NextAuthOptions = {
                 if (sessionUser) {
                     session.user.id = sessionUser._id.toString();
                     session.user.username = sessionUser.username;
+                    session.user.role = sessionUser.role;
                 }
             }
             return session;

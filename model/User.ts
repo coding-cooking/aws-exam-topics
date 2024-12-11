@@ -18,22 +18,24 @@ const UserSchema = new Schema({
     image: {
         type: String,
     },
-    role: {
-        type: String,
-        default: null,
+    roles: {
+        types: [
+            { type: String, enum: ['user', 'saaUser', 'dopUser', 'sapUser'], }],
+        default: ['user'],
     },
     provider: {
         type: String,
     },
-    subscriptionTypes: {
-        type: [String],
-        default: [],
-        required: true,
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
+    subscriptionProducts: [{
+        type: { type: String },
+        activationDate: { type: Date },
+        expirationDate: { type: Date }
+    }],
+    activationCodes: [{
+        code: { type: String },
+        product: { type: String },
+        used: { type: Boolean, default: false }
+    }]
 });
 
 export type UserType = {
@@ -42,9 +44,10 @@ export type UserType = {
     email: string;
     image?: string;
     password: string;
+    role: string;
     provider?: string;
-    subscriptionTypes: string[];
-    createdAt: Date;
+    subscriptionProducts: string[];
+    activationCodes: string[];
 }
 
 const User = models.User || model("User", UserSchema);
