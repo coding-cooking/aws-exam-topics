@@ -31,12 +31,23 @@ const UserSchema = new Schema({
         activationDate: { type: Date },
         expirationDate: { type: Date }
     }],
-    activationCodes: [{
+    activationInfos: [{
         code: { type: String },
         product: { type: String },
         used: { type: Boolean, default: false }
     }]
 });
+export type subscriptionProducttype = {
+    type: string;
+    activationDate: Date;
+    expirationDate: Date;
+}
+export type activationInfoType = {
+    code: string;
+    product: string;
+    used: boolean;
+}
+
 
 export type UserType = {
     _id: string;
@@ -46,8 +57,8 @@ export type UserType = {
     password: string;
     role: string;
     provider?: string;
-    subscriptionProducts: string[];
-    activationCodes: string[];
+    subscriptionProducts?: subscriptionProducttype[];
+    activationInfos?: activationInfoType[];
 }
 
 const User = models.User || model("User", UserSchema);

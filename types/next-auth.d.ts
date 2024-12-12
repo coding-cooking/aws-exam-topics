@@ -10,7 +10,12 @@ declare module "next-auth" {
             username:string;
             email: string;
             image: string;
-            role: string;
+            roles?: string[];
+            subscriptionProducts?: Array<{
+                type: string;
+                activationDate: Date;
+                expirationDate: Date;
+            }>;
         },
         expires: string;
     }

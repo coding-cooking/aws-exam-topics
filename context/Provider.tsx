@@ -10,7 +10,12 @@ export type ProviderProps = {
             email: string;
             image: string;
             id: string;
-            role: string;
+            roles: string[];
+            subscriptionProducts?: Array<{
+                type: string;
+                activationDate: Date;
+                expirationDate: Date;
+            }>;
         };
         expires: string;
     };
