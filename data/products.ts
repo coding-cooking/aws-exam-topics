@@ -7,12 +7,12 @@ export const products=[
     {
         name: 'DOP-C02',
         description: '500+ Exam Topics with comprehensive explanation',
-        image: '/dop-c02.jpg'
+        image: '/dop-c02.jpeg'
     },
     {
         name: 'SAP-C02',
         description: '800+ Exam Topics with comprehensive explanation',
-        image: '/sap-c02.jpg'
+        image: '/sap-c02.jpeg'
     },
 
 ]
