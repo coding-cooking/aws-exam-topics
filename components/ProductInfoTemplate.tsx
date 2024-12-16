@@ -18,11 +18,9 @@ export default function ProductInfoTemplate({ product }: ProductInfoTemplateProp
             console.log("User is not authenticated");
             return;
         }
-
         setAdding(true)
-
         try {
-            const response = await fetch('/api/cart', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/cart`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -30,12 +28,13 @@ export default function ProductInfoTemplate({ product }: ProductInfoTemplateProp
                 },
                 body: JSON.stringify({ product })
             })
+
+            const responseData = await response.json();
+
             if (response.ok) {
                 console.log('Product added to cart successfully');
             } else {
-                // Handle error
-                const errorData = await response.json();
-                console.error('Error adding product to cart:', errorData.message);
+                console.error('Error adding product to cart:', responseData.message);
             }
         } catch (error) {
             console.error('Network error:', error);

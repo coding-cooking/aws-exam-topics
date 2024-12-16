@@ -26,17 +26,24 @@ export const options: NextAuthOptions = {
         strategy: "jwt",
     },
     callbacks: {
+        async jwt({ token, user, account }) {
+            if (account && user) {
+                token.accessToken = account.access_token; 
+                token.id = user.id; 
+            }
+            return token;
+        },
         async session({ session, token }) {
-            console.log('session jiu shi', session)
+            console.log('Token in session callback:', token);
             if (session.user) {
                 const sessionUser: UserType | null = await User.findOne({ email: session.user.email });
                 if (sessionUser && token) {
                     session.user.id = sessionUser._id.toString();
                     session.user.username = sessionUser.username;
+                    session.user.accessToken = token.accessToken;
                     session.user.roles = sessionUser.roles;
                     session.user.subscriptionProducts = sessionUser.subscriptionProducts;
                     session.user.activationInfos = sessionUser.activationInfos;
-                    session.user.accessToken = token;
                 } else {
                     console.error('User not found in the database');
                 }
@@ -64,7 +71,7 @@ export const options: NextAuthOptions = {
                 try {
                     await dbConnect();
                     const userExists = await User.findOne({ email: profile.email });
-                    console.log('profile is', profile, 'account is', account, 'user is ', user )
+                    // console.log('profile is', profile, 'account is', account, 'user is ', user )
 
                     let profileImage;
                     if (account.provider === 'facebook') {
