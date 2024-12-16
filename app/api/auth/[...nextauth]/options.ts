@@ -23,18 +23,27 @@ export const options: NextAuthOptions = {
         })
     ],
     session: {
-        strategy: "database",
+        strategy: "jwt",
     },
     callbacks: {
-        async session({ session }) {
+        async session({ session, token }) {
+            console.log('session jiu shi', session)
             if (session.user) {
                 const sessionUser: UserType | null = await User.findOne({ email: session.user.email });
-                if (sessionUser) {
+                if (sessionUser && token) {
                     session.user.id = sessionUser._id.toString();
                     session.user.username = sessionUser.username;
-                    session.user.role = sessionUser.role;
+                    session.user.roles = sessionUser.roles;
+                    session.user.subscriptionProducts = sessionUser.subscriptionProducts;
+                    session.user.activationInfos = sessionUser.activationInfos;
+                    session.user.accessToken = token;
+                } else {
+                    console.error('User not found in the database');
                 }
+            } else {
+                console.error('session.user is undefined');
             }
+            console.log('session hahaha', session)
             return session;
         },
         async signIn({
@@ -55,6 +64,7 @@ export const options: NextAuthOptions = {
                 try {
                     await dbConnect();
                     const userExists = await User.findOne({ email: profile.email });
+                    console.log('profile is', profile, 'account is', account, 'user is ', user )
 
                     let profileImage;
                     if (account.provider === 'facebook') {
@@ -76,8 +86,9 @@ export const options: NextAuthOptions = {
                             username: profile.name?.replace(" ", "").toLowerCase(),
                             image: profileImage,
                             provider: account.provider,
+                            roles: ['user'],
                             subscriptionTypes: [],
-                            createdAt: Date.now(),
+                            activationInfos:[],
                         });
                     }
                     return true;

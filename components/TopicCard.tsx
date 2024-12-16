@@ -1,5 +1,6 @@
 import { products } from "@/data/products";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function TopicCard() {
     return (
@@ -15,7 +16,9 @@ export default function TopicCard() {
                             <p className="text-sm text-slate-500">{product.description}</p>
                         </div>
                         <div>
-                            <button className="w-[60px] h-[40px] bg-blue-800 hover:bg-blue-600 rounded-xl text-white hover:">Buy</button>
+                            <Link href={`/topic/${product.handle}`}>
+                                <button className="w-[60px] h-[40px] bg-emerald-700 hover:bg-emerald-500 rounded-xl text-white hover:">Buy</button>
+                            </Link>
                         </div>
                     </div>
 

@@ -19,8 +19,8 @@ const UserSchema = new Schema({
         type: String,
     },
     roles: {
-        types: [
-            { type: String, enum: ['user', 'saaUser', 'dopUser', 'sapUser'], }],
+        type: [String],
+        enum: ['user', 'saaUser', 'dopUser', 'sapUser'],
         default: ['user'],
     },
     provider: {
@@ -55,7 +55,7 @@ export type UserType = {
     email: string;
     image?: string;
     password: string;
-    role: string;
+    roles: string[];
     provider?: string;
     subscriptionProducts?: subscriptionProducttype[];
     activationInfos?: activationInfoType[];

@@ -1,4 +1,5 @@
 import NextAuth from "next-auth"
+import { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {
     /**
@@ -10,12 +11,18 @@ declare module "next-auth" {
             username:string;
             email: string;
             image: string;
+            accessToken: JWT;
             roles?: string[];
             subscriptionProducts?: Array<{
                 type: string;
                 activationDate: Date;
                 expirationDate: Date;
             }>;
+            activationInfos?: Array<{
+                code: string;
+                product: string;
+                used: boolean;
+            }>
         },
         expires: string;
     }

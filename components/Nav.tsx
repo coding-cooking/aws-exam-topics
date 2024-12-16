@@ -22,19 +22,9 @@ export default function Nav() {
     }, [])
 
     return (
-        <nav className="w-4/5 mx-auto flex justify-between items-center py-6">
-            <Link href="/" className="text-lg font-semibold text-sky-800">
-                {/* <Image
-                    src="/logo.png"
-                    alt="SuperPrompt Logo"
-                    width={120}
-                    height={30}
-                    className="object-contain"
-                /> */}
+        <nav className="w-full mx-auto flex justify-between items-center px-20 py-6 bg-slate-950">
+            <Link href="/" className="text-lg font-semibold text-emerald-700">
                 Aws Exam Topics
-            </Link>
-            <Link href='/saa'>
-                SAA
             </Link>
 
             {session?.user?.image ? (
@@ -48,11 +38,14 @@ export default function Nav() {
                             alt="profile"
                         />
                     </Link>
-                    <button type="button" onClick={(event: React.MouseEvent<HTMLButtonElement>) => signOut()} className="w-20 h-8 border border-1 border-black-400 rounded-md hover:bg-sky-400 hover:text-slate-100 cursor-pointer">Sign Out</button>
+                    <button
+                        type="button"
+                        onClick={(event: React.MouseEvent<HTMLButtonElement>) => signOut()}
+                        className="w-20 h-8 border border-1 border-black-400 rounded-md hover:bg-emerald-700 text-white cursor-pointer">Sign Out</button>
                 </div>
             ) : <div>
                 {!toggleDropdown && <button
-                    className="w-20 h-8 border border-1 border-black-400 rounded-md hover:bg-sky-400 hover:text-slate-100 cursor-pointer"
+                    className="w-20 h-8 border border-1 border-white rounded-md hover:bg-emerald-700 text-white cursor-pointer"
                     onClick={() => setToggleDropdown((prev) => !prev)}>
                     Sign In
                 </button>}
@@ -63,7 +56,7 @@ export default function Nav() {
                                 type="button"
                                 key={provider.name}
                                 onClick={() => signIn(provider.id)}
-                                className="w-20 h-8 border border-1 border-black-400 rounded-md hover:bg-sky-400 hover:text-slate-100 cursor-pointer">
+                                className="w-20 h-8 border border-1 border-white rounded-md hover:bg-emerald-700 text-white cursor-pointer">
                                 {`${provider.name}`}
                             </button>
                         )))
