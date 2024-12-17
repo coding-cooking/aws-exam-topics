@@ -60,7 +60,6 @@ export type CartItemType = {
     handle: string;
 }
 
-
 export type UserType = {
     _id: string;
     username: string;
