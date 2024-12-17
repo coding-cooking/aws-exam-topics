@@ -20,7 +20,7 @@ export default function ProductInfoTemplate({ product }: ProductInfoTemplateProp
         }
         setAdding(true)
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/cart`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/cart/add`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

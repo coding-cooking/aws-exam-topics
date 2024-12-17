@@ -35,17 +35,29 @@ const UserSchema = new Schema({
         code: { type: String },
         product: { type: String },
         used: { type: Boolean, default: false }
+    }],
+    cart: [{
+        name: { type: String },
+        description: { type: String },
+        image: { type: String },
+        handle: { type: String },
     }]
 });
-export type subscriptionProducttype = {
+export type SubscriptionProducttype = {
     type: string;
     activationDate: Date;
     expirationDate: Date;
 }
-export type activationInfoType = {
+export type ActivationInfoType = {
     code: string;
     product: string;
     used: boolean;
+}
+export type CartItemType = {
+    name: string;
+    description: string;
+    image: string;
+    handle: string;
 }
 
 
@@ -57,8 +69,9 @@ export type UserType = {
     password: string;
     roles: string[];
     provider?: string;
-    subscriptionProducts?: subscriptionProducttype[];
-    activationInfos?: activationInfoType[];
+    subscriptionProducts?: SubscriptionProducttype[];
+    activationInfos?: ActivationInfoType[];
+    cart: CartItemType[];
 }
 
 const User = models.User || model("User", UserSchema);

@@ -22,6 +22,12 @@ declare module "next-auth" {
                 code: string;
                 product: string;
                 used: boolean;
+            }>;
+            cart?: Array<{
+                name: string;
+                description: string;
+                image: string;
+                handle: string;
             }>
         },
         expires: string;

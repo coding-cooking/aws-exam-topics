@@ -1,10 +1,8 @@
 import { dbConnect } from "@/utils/dbConnect";
 import { getServerSession } from "next-auth";
 import User from "@/model/User";
-import { options } from "../auth/[...nextauth]/options";
-import { NextApiRequest, NextApiResponse } from "next";
+import { options } from "../../auth/[...nextauth]/options";
 import { NextRequest, NextResponse } from "next/server";
-import { generateActivationCode } from "@/utils/generateActivationCode";
 
 export async function POST(req: NextRequest) {
     try {
@@ -36,10 +34,11 @@ export async function POST(req: NextRequest) {
             // return res.status(404).json({ message: "User not found!" });
         }
 
-        user.subscriptionProducts.push({
-            type: product.name,
-            activationDate: new Date(),
-            expirationDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
+        user.cart.push({
+            name: product.name,
+            description: product.description,
+            image: product.image,
+            handle: product.handle,
         });
 
         // // Generate an activation code

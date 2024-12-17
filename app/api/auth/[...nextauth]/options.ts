@@ -1,14 +1,20 @@
 import User, { UserType } from "@/model/User";
 import { dbConnect } from "@/utils/dbConnect";
-import { NextAuthOptions } from "next-auth";
+import { NextAuthOptions, Session } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import { Profile as DefaultProfile } from "next-auth";
 import { Account, User as NextAuthUser } from "next-auth";
 import { AdapterUser } from "next-auth/adapters";
+import { JWT } from "next-auth/jwt";
 
 interface CustomProfile extends DefaultProfile {
     picture?: string | { data?: { url?: string } };
+}
+
+interface ExtendedToken extends JWT {
+    accessToken?: string;
+    id?: string;
 }
 
 export const options: NextAuthOptions = {
@@ -26,14 +32,15 @@ export const options: NextAuthOptions = {
         strategy: "jwt",
     },
     callbacks: {
-        async jwt({ token, user, account }) {
+        async jwt({ token, user, account }: { token: ExtendedToken; user?: any; account?: any}) {
             if (account && user) {
-                token.accessToken = account.access_token; 
+                token.accessToken = account.access_token as string; 
                 token.id = user.id; 
             }
             return token;
         },
-        async session({ session, token }) {
+        async session({ session, token }:{ session: any; token: ExtendedToken
+    }) {
             console.log('Token in session callback:', token);
             if (session.user) {
                 const sessionUser: UserType | null = await User.findOne({ email: session.user.email });
@@ -44,13 +51,13 @@ export const options: NextAuthOptions = {
                     session.user.roles = sessionUser.roles;
                     session.user.subscriptionProducts = sessionUser.subscriptionProducts;
                     session.user.activationInfos = sessionUser.activationInfos;
+                    session.user.cart = sessionUser.cart;
                 } else {
                     console.error('User not found in the database');
                 }
             } else {
                 console.error('session.user is undefined');
             }
-            console.log('session hahaha', session)
             return session;
         },
         async signIn({
@@ -71,7 +78,6 @@ export const options: NextAuthOptions = {
                 try {
                     await dbConnect();
                     const userExists = await User.findOne({ email: profile.email });
-                    // console.log('profile is', profile, 'account is', account, 'user is ', user )
 
                     let profileImage;
                     if (account.provider === 'facebook') {
@@ -96,6 +102,7 @@ export const options: NextAuthOptions = {
                             roles: ['user'],
                             subscriptionTypes: [],
                             activationInfos:[],
+                            cart: [],
                         });
                     }
                     return true;
