@@ -5,7 +5,6 @@ import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import { Profile as DefaultProfile } from "next-auth";
 import { JWT } from "next-auth/jwt";
-import Error, { ErrorProps } from "next/error";
 
 interface CustomProfile extends DefaultProfile {
     picture?: string | { data?: { url?: string } };
