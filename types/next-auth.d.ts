@@ -11,7 +11,7 @@ declare module "next-auth" {
             username:string;
             email: string;
             image: string;
-            accessToken: JWT;
+            accessToken?: string;
             roles?: string[];
             subscriptionProducts?: Array<{
                 type: string;

@@ -1,6 +1,6 @@
 import User, { UserType } from "@/model/User";
 import { dbConnect } from "@/utils/dbConnect";
-import { NextAuthOptions, Session } from "next-auth";
+import { NextAuthOptions, Session, User as AuthUser } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import { Profile as DefaultProfile } from "next-auth";
@@ -32,14 +32,14 @@ export const options: NextAuthOptions = {
         strategy: "jwt",
     },
     callbacks: {
-        async jwt({ token, user, account }: { token: ExtendedToken; user?: any; account?: any}) {
+        async jwt({ token, user, account }: { token: ExtendedToken; user: AuthUser; account?: Account | null}) {
             if (account && user) {
                 token.accessToken = account.access_token as string; 
                 token.id = user.id; 
             }
             return token;
         },
-        async session({ session, token }:{ session: any; token: ExtendedToken
+        async session({ session, token }:{ session: Session; token: ExtendedToken
     }) {
             console.log('Token in session callback:', token);
             if (session.user) {

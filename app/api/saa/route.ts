@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import Topic from "@/model/Topic";
 import { dbConnect } from "@/utils/dbConnect";
 
-export async function GET(request: Request) {
+export async function GET() {
     try {
         await dbConnect();
         
