@@ -2,7 +2,6 @@
 
 import TopicsContext, { TopicType } from "@/context/TopicsContext";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { useContext } from "react";
 
 export default function SaaPage() {

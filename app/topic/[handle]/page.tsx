@@ -1,6 +1,5 @@
 import ProductInfoTemplate from "@/components/ProductInfoTemplate";
 import { products, productType } from "@/data/products";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 
 export default async function ProductInfoPage({ params }: { params: { handle: string } }) {

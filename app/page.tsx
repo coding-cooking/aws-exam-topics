@@ -1,4 +1,3 @@
-import Link from "next/link";
 import dotenv from "dotenv";
 import { Metadata } from "next";
 import TopicCard from "@/components/TopicCard";

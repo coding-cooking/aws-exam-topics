@@ -63,12 +63,12 @@ export const options: NextAuthOptions = {
         async signIn({
             account,
             profile,
-            user,
+            // user,
             credentials
         }: {
             account: Account | null;
             profile?: CustomProfile;
-            user?: NextAuthUser | AdapterUser;
+            // user?: NextAuthUser | AdapterUser;
             credentials?: Record<string, unknown>;
         }) {
             if (credentials) {

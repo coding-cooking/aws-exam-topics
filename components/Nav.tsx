@@ -2,12 +2,12 @@ import { BuiltInProviderType } from "next-auth/providers/index";
 import { ClientSafeProvider, getProviders, LiteralUnion, signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Nav() {
     const [providers, setProviders] = useState<null | Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider>>(null);
-    const router = useRouter();
+    // const router = useRouter();
     const { data: session } = useSession();
     const [toggleDropdown, setToggleDropdown] = useState<boolean>(false);
 
@@ -40,7 +40,7 @@ export default function Nav() {
                     </Link>
                     <button
                         type="button"
-                        onClick={(event: React.MouseEvent<HTMLButtonElement>) => signOut()}
+                        onClick={() => signOut()}
                         className="w-20 h-8 border border-1 border-black-400 rounded-md hover:bg-emerald-700 text-white cursor-pointer">Sign Out</button>
                 </div>
             ) : <div>
