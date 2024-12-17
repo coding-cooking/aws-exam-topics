@@ -1,12 +1,11 @@
 import User, { UserType } from "@/model/User";
 import { dbConnect } from "@/utils/dbConnect";
-import { NextAuthOptions, Session, User as AuthUser } from "next-auth";
+import { NextAuthOptions, Session, User as AuthUser, Account } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import { Profile as DefaultProfile } from "next-auth";
-import { Account, User as NextAuthUser } from "next-auth";
-import { AdapterUser } from "next-auth/adapters";
 import { JWT } from "next-auth/jwt";
+import Error, { ErrorProps } from "next/error";
 
 interface CustomProfile extends DefaultProfile {
     picture?: string | { data?: { url?: string } };
@@ -68,7 +67,7 @@ export const options: NextAuthOptions = {
         }: {
             account: Account | null;
             profile?: CustomProfile;
-            // user?: NextAuthUser | AdapterUser;
+            // user?: AuthUser | AdapterUser;
             credentials?: Record<string, unknown>;
         }) {
             if (credentials) {
@@ -106,8 +105,8 @@ export const options: NextAuthOptions = {
                         });
                     }
                     return true;
-                } catch (error: any) {
-                    console.log("Error checking if user exists: ", error.message);
+                } catch (error) {
+                    console.log("Error checking if user exists: ", error);
                     return false;
                 }
             }
