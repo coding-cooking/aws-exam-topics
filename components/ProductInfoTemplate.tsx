@@ -4,6 +4,7 @@ import { productType } from "@/data/products";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
+import CartDrawer from "./CartDrawer";
 
 type ProductInfoTemplateProps = {
     product: productType;
@@ -12,6 +13,7 @@ type ProductInfoTemplateProps = {
 export default function ProductInfoTemplate({ product }: ProductInfoTemplateProps) {
     const { data: session } = useSession();
     const [adding, setAdding] = useState<boolean>(false)
+    const [drawerOpen, setDrawerOpen] = useState<boolean>(false)
 
     async function handleAddtoCart() {
         if (!session) {
@@ -40,12 +42,12 @@ export default function ProductInfoTemplate({ product }: ProductInfoTemplateProp
             console.error('Network error:', error);
         } finally {
             setAdding(false);
+            setDrawerOpen(true);
         }
     }
     return (
 
         <div className="w-[full] h-[full] flex flex-col justify-center item-start pt-20 pl-20">
-
             <h2 className="text-2xl text-black font-semibold">
                 {product.name} Exam Topics
             </h2>
@@ -63,6 +65,7 @@ export default function ProductInfoTemplate({ product }: ProductInfoTemplateProp
                     </button>
                 </div>
             </div>
+            <CartDrawer drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
         </div>
     )
 }

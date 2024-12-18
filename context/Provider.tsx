@@ -11,11 +11,23 @@ export type ProviderProps = {
             image: string;
             id: string;
             roles: string[];
+            accessToken?: string;
             subscriptionProducts?: Array<{
                 type: string;
                 activationDate: Date;
                 expirationDate: Date;
             }>;
+            activationInfos?: Array<{
+                code: string;
+                product: string;
+                used: boolean;
+            }>;
+            cart?: Array<{
+                name: string;
+                description: string;
+                image: string;
+                handle: string;
+            }>
         };
         expires: string;
     };
