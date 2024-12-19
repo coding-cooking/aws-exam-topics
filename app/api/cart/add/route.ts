@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
             description: product.description,
             image: product.image,
             handle: product.handle,
+            price: product.price,
         });
 
         // // Generate an activation code

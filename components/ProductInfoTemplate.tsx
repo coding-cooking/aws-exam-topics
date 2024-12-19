@@ -65,7 +65,7 @@ export default function ProductInfoTemplate({ product }: ProductInfoTemplateProp
                     </button>
                 </div>
             </div>
-            <CartDrawer drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
+            <CartDrawer drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} user={session?.user} />
         </div>
     )
 }

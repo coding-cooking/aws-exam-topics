@@ -27,6 +27,7 @@ export type ProviderProps = {
                 description: string;
                 image: string;
                 handle: string;
+                price: string;
             }>
         };
         expires: string;

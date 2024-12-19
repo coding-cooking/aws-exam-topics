@@ -28,6 +28,7 @@ declare module "next-auth" {
                 description: string;
                 image: string;
                 handle: string;
+                price: string;
             }>
         },
         expires: string;

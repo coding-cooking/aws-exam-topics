@@ -41,6 +41,7 @@ const UserSchema = new Schema({
         description: { type: String },
         image: { type: String },
         handle: { type: String },
+        price: { type: String }
     }]
 });
 export type SubscriptionProducttype = {
@@ -58,6 +59,7 @@ export type CartItemType = {
     description: string;
     image: string;
     handle: string;
+    price: string;
 }
 
 export type UserType = {
