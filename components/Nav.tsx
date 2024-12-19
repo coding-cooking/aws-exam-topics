@@ -3,12 +3,14 @@ import { ClientSafeProvider, getProviders, LiteralUnion, signIn, signOut, useSes
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import CartDrawer from "./CartDrawer";
 
 export default function Nav() {
     const [providers, setProviders] = useState<null | Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider>>(null);
     // const router = useRouter();
     const { data: session } = useSession();
     const [toggleDropdown, setToggleDropdown] = useState<boolean>(false);
+    const [drawerOpen, setDrawerOpen] = useState<boolean>(false)
 
     console.log('session', session)
 
@@ -41,6 +43,7 @@ export default function Nav() {
                         type="button"
                         onClick={() => signOut()}
                         className="w-20 h-8 border border-1 border-black-400 rounded-md hover:bg-emerald-700 text-white cursor-pointer">Sign Out</button>
+                    <CartDrawer drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} user={session?.user} showIcon={true} />
                 </div>
             ) : <div>
                 {!toggleDropdown && <button

@@ -10,16 +10,21 @@ type CartDrawerProps = {
     drawerOpen: boolean;
     setDrawerOpen: Dispatch<SetStateAction<boolean>>;
     user: SessionUser;
+    showIcon: boolean;
 }
 
-export default function CartDrawer({ drawerOpen, setDrawerOpen, user }: CartDrawerProps) {
+export default function CartDrawer({ drawerOpen, setDrawerOpen, user, showIcon }: CartDrawerProps) {
 
     return (
         <Dialog.Root open={drawerOpen} onOpenChange={setDrawerOpen}>
             {/* Trigger Button */}
-            {/* <Dialog.Trigger className='bg-white'>
-                <ShoppingCart className="w-5 h-5" />
-            </Dialog.Trigger> */}
+            <Dialog.Trigger >
+                {showIcon ?
+                    (<ShoppingCart className="w-5 h-5 text-white" />)
+                    : ''
+                }
+
+            </Dialog.Trigger>
 
             {/* Drawer Overlay */}
             <Dialog.Portal>
