@@ -20,7 +20,7 @@ export default function CartDrawer({ drawerOpen, setDrawerOpen, user, showIcon }
             {/* Trigger Button */}
             <Dialog.Trigger >
                 {showIcon ?
-                    (<ShoppingCart className="w-5 h-5 text-white" />)
+                    (<ShoppingCart className="w-5 h-5 text-red-900" />)
                     : ''
                 }
 

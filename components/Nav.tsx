@@ -12,8 +12,6 @@ export default function Nav() {
     const [toggleDropdown, setToggleDropdown] = useState<boolean>(false);
     const [drawerOpen, setDrawerOpen] = useState<boolean>(false)
 
-    console.log('session', session)
-
     useEffect(() => {
         const setUpProviders = async () => {
             const response = await getProviders();

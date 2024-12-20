@@ -12,7 +12,7 @@ declare module "next-auth" {
             email: string;
             image: string;
             accessToken?: string;
-            roles?: string[];
+            roles: string[];
             subscriptionProducts?: Array<{
                 type: string;
                 activationDate: Date;
@@ -23,7 +23,7 @@ declare module "next-auth" {
                 product: string;
                 used: boolean;
             }>;
-            cart?: Array<{
+            cart: Array<{
                 name: string;
                 description: string;
                 image: string;

@@ -22,7 +22,7 @@ export type ProviderProps = {
                 product: string;
                 used: boolean;
             }>;
-            cart?: Array<{
+            cart: Array<{
                 name: string;
                 description: string;
                 image: string;
