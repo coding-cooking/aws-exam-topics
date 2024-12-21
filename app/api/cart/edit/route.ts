@@ -20,9 +20,9 @@ export async function DELETE(req: NextRequest) {
 
         const userId = session.user.id;
 
-        const { product } = body;
+        const { id } = body;
 
-        if (!product) {
+        if (!id) {
             return NextResponse.json({ message: "Product data is required" }, { status: 400 });
         }
 
@@ -32,7 +32,7 @@ export async function DELETE(req: NextRequest) {
             return NextResponse.json({ message: "User not found" }, { status: 404 });
         }
 
-        user.cart = user.cart.filter((item: CartItemType) => item !== product )
+        user.cart = user.cart.filter((item: CartItemType) => item._id !== id )
 
         await user.save();
 
@@ -42,6 +42,5 @@ export async function DELETE(req: NextRequest) {
     } catch (error) {
         console.error('Error deleting product from cart:', error);
         return NextResponse.json({ message: "Internal server error" }, { status: 500 });
-
     }
 }

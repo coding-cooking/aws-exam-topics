@@ -55,6 +55,7 @@ export type ActivationInfoType = {
     used: boolean;
 }
 export type CartItemType = {
+    _id: string;
     name: string;
     description: string;
     image: string;

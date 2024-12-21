@@ -1,6 +1,7 @@
 import { UserType } from '@/model/User';
 import * as Dialog from '@radix-ui/react-dialog'; // shadcn uses radix-ui for components
 import { MoveRight, ShoppingCart, Trash2 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { Dispatch, SetStateAction } from 'react';
 
@@ -14,13 +15,38 @@ type CartDrawerProps = {
 }
 
 export default function CartDrawer({ drawerOpen, setDrawerOpen, user, showIcon }: CartDrawerProps) {
+    const { data: session } = useSession();
+
+    async function removeItem(id: string) {
+        if (!session) {
+            console.log("User is not authenticated");
+            return;
+        }
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/cart/edit`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.user.accessToken}`,
+                },
+                body: JSON.stringify({ id })
+            })
+            if (response.ok) {
+                console.log('Item removed successfully');
+            } else {
+                console.error('Failed to remove item:', await response.text());
+            }
+        } catch (error) {
+            console.error('Network error:', error);
+        }
+    }
 
     return (
         <Dialog.Root open={drawerOpen} onOpenChange={setDrawerOpen}>
             {/* Trigger Button */}
             <Dialog.Trigger >
                 {showIcon ?
-                    (<ShoppingCart className="w-5 h-5 text-red-900" />)
+                    (<ShoppingCart className="w-5 h-5 text-white" />)
                     : ''
                 }
 
@@ -37,7 +63,6 @@ export default function CartDrawer({ drawerOpen, setDrawerOpen, user, showIcon }
 
                     {/* Close Button */}
 
-
                     {/* Drawer Content */}
                     <Dialog.DialogTitle className='hidden'></Dialog.DialogTitle>
                     <div className='w-full h-12 p-4 flex gap-12 bg-emerald-500'>
@@ -45,7 +70,6 @@ export default function CartDrawer({ drawerOpen, setDrawerOpen, user, showIcon }
                             <div className='w-8 h-6 flex justify-center items-center rounded-lg hover:bg-emerald-400 cursor-pointer'>
                                 <MoveRight className="w-5 h-5" />
                             </div>
-
                         </Dialog.Close>
                         <div className='flex gap-4'>
                             <ShoppingCart />
@@ -61,12 +85,10 @@ export default function CartDrawer({ drawerOpen, setDrawerOpen, user, showIcon }
                                 <div className='flex flex-col gap-2'>
                                     <div className='flex gap-6'>
                                         <h2>{item.name}</h2>
-                                        <Trash2 className="w-5 h-5" />
+                                        <Trash2 className="w-5 h-5" onClick={() => { removeItem(item._id) }} />
                                     </div>
-
                                     <div>$ {item.price}</div>
                                 </div>
-
                             </div>
                         ))) : <p className='mx-auto'>Your cart is empty.</p>
                         }

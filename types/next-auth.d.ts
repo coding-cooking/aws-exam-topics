@@ -24,6 +24,7 @@ declare module "next-auth" {
                 used: boolean;
             }>;
             cart: Array<{
+                _id: string;
                 name: string;
                 description: string;
                 image: string;
