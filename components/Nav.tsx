@@ -4,13 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import CartDrawer from "./CartDrawer";
+import useCart from "@/hooks/useCart";
 
 export default function Nav() {
     const [providers, setProviders] = useState<null | Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider>>(null);
-    // const router = useRouter();
     const { data: session } = useSession();
     const [toggleDropdown, setToggleDropdown] = useState<boolean>(false);
-    const [drawerOpen, setDrawerOpen] = useState<boolean>(false)
+    const { drawerOpen, setDrawerOpen } = useCart(session);
 
     useEffect(() => {
         const setUpProviders = async () => {
@@ -41,7 +41,7 @@ export default function Nav() {
                         type="button"
                         onClick={() => signOut()}
                         className="w-20 h-8 border border-1 border-black-400 rounded-md hover:bg-emerald-700 text-white cursor-pointer">Sign Out</button>
-                    <CartDrawer drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} user={session?.user} showIcon={true} />
+                    <CartDrawer drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} showIcon={true} />
                 </div>
             ) : <div>
                 {!toggleDropdown && <button

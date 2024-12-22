@@ -1,45 +1,27 @@
+'use client'
+
+import useCart from '@/hooks/useCart';
 import { UserType } from '@/model/User';
-import * as Dialog from '@radix-ui/react-dialog'; // shadcn uses radix-ui for components
+import * as Dialog from '@radix-ui/react-dialog';
 import { MoveRight, ShoppingCart, Trash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
 type SessionUser = Omit<UserType, '_id' | 'password'>
 
 type CartDrawerProps = {
     drawerOpen: boolean;
     setDrawerOpen: Dispatch<SetStateAction<boolean>>;
-    user: SessionUser;
     showIcon: boolean;
 }
 
-export default function CartDrawer({ drawerOpen, setDrawerOpen, user, showIcon }: CartDrawerProps) {
+export default function CartDrawer({ drawerOpen, setDrawerOpen, showIcon }: CartDrawerProps) {
     const { data: session } = useSession();
+    const [isLoading, setIsLoading] = useState<boolean>(true)
+    const { cartList, removeItem } = useCart();
 
-    async function removeItem(id: string) {
-        if (!session) {
-            console.log("User is not authenticated");
-            return;
-        }
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/cart/edit`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${session.user.accessToken}`,
-                },
-                body: JSON.stringify({ id })
-            })
-            if (response.ok) {
-                console.log('Item removed successfully');
-            } else {
-                console.error('Failed to remove item:', await response.text());
-            }
-        } catch (error) {
-            console.error('Network error:', error);
-        }
-    }
+    const safeCartList = Array.isArray(cartList) ? cartList : [];
 
     return (
         <Dialog.Root open={drawerOpen} onOpenChange={setDrawerOpen}>
@@ -77,7 +59,7 @@ export default function CartDrawer({ drawerOpen, setDrawerOpen, user, showIcon }
                         </div>
                     </div>
                     <div className='mt-8 flex flex-col gap-2 overflow-hidden'>
-                        {user?.cart?.length > 1 ? (user.cart.map(item => (
+                        {safeCartList.length ? (safeCartList.map(item => (
                             <div key={`${item.handle}-${item.description}`} className='w-11/12 mx-auto flex gap-2 p-4 border border-solid border-slate-300 rounded-lg'>
                                 <div>
                                     <Image src={item.image} alt={item.name} width={100} height={40} />
@@ -85,7 +67,7 @@ export default function CartDrawer({ drawerOpen, setDrawerOpen, user, showIcon }
                                 <div className='flex flex-col gap-2'>
                                     <div className='flex gap-6'>
                                         <h2>{item.name}</h2>
-                                        <Trash2 className="w-5 h-5" onClick={() => { removeItem(item._id) }} />
+                                        <Trash2 className="w-5 h-5 cursor-pointer" onClick={() => { removeItem(item._id) }} />
                                     </div>
                                     <div>$ {item.price}</div>
                                 </div>
@@ -97,8 +79,8 @@ export default function CartDrawer({ drawerOpen, setDrawerOpen, user, showIcon }
                         <div className='px-12 py-4 flex justify-between text-xl'>
                             <p className=''>Total</p>
                             {
-                                user?.cart?.length > 1 ? (
-                                    <p> $ {user.cart.reduce((acc, cur) => acc + Number(cur.price), 0).toFixed(2)} </p>
+                                safeCartList.length ? (
+                                    <p> $ {cartList.reduce((acc, cur) => acc + Number(cur.price), 0).toFixed(2)} </p>
                                 )
                                     : (<p>$ 0.00</p>)}
                         </div>

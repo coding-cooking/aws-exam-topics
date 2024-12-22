@@ -39,7 +39,6 @@ export const options: NextAuthOptions = {
         },
         async session({ session, token }:{ session: Session; token: ExtendedToken
     }) {
-            console.log('Token in session callback:', token);
             if (session.user) {
                 const sessionUser: UserType | null = await User.findOne({ email: session.user.email });
                 if (sessionUser && token) {

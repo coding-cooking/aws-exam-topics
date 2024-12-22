@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { options } from "../../auth/[...nextauth]/options";
 import User from "@/model/User";
 import { CartItemType } from "@/model/User";
+import { isValidObjectId } from "mongoose";
 
 export async function DELETE(req: NextRequest) {
     try {
@@ -16,14 +17,11 @@ export async function DELETE(req: NextRequest) {
         if (!session) {
             return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
         }
-        console.log('Incoming request body:', req.body);
 
         const userId = session.user.id;
-
-        const { id } = body;
-
-        if (!id) {
-            return NextResponse.json({ message: "Product data is required" }, { status: 400 });
+        
+        if (!isValidObjectId(userId)) {
+            return NextResponse.json({ message: "Invalid user ID" }, { status: 400 });
         }
 
         const user = await User.findById(userId);
@@ -32,12 +30,27 @@ export async function DELETE(req: NextRequest) {
             return NextResponse.json({ message: "User not found" }, { status: 404 });
         }
 
-        user.cart = user.cart.filter((item: CartItemType) => item._id !== id )
+        const { id } = body;
+
+        if (!id) {
+            return NextResponse.json({ message: "Product data is required" }, { status: 400 });
+        }
+
+        if (!Array.isArray(user.cart)) {
+            return NextResponse.json({ message: "Invalid cart data" }, { status: 400 });
+        }
+
+        const cartItemIndex = user.cart.findIndex((item: CartItemType) => item._id.toString() === id);
+
+        if (cartItemIndex === -1) {
+            return NextResponse.json({ message: "Item not found in cart" }, { status: 404 });
+        }
+
+        user.cart = user.cart.filter((item: CartItemType) => item._id.toString() !== id);
 
         await user.save();
 
         return NextResponse.json({ message: "Product delete from cart successfully" }, { status: 200 });
-
 
     } catch (error) {
         console.error('Error deleting product from cart:', error);

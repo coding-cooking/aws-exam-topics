@@ -3,8 +3,10 @@ import { getServerSession } from "next-auth";
 import User from "@/model/User";
 import { options } from "../../auth/[...nextauth]/options";
 import { NextRequest, NextResponse } from "next/server";
+import { isValidObjectId } from "mongoose";
 
 export async function POST(req: NextRequest) {
+    console.log('this is the add route')
     try {
         await dbConnect();
 
@@ -18,16 +20,20 @@ export async function POST(req: NextRequest) {
 
         const userId = session.user.id;
 
-        const { product } = body;
-
-        if (!product) {
-            return NextResponse.json({ message: "Product data is required" }, { status: 400 });
+        if (!isValidObjectId(userId)) {
+            return NextResponse.json({ message: "Invalid user ID" }, { status: 400 });
         }
 
         const user = await User.findById(userId);
 
         if (!user) {
             return NextResponse.json({ message: "User not found" }, { status: 404 });
+        }
+
+        const { product } = body;
+
+        if (!product) {
+            return NextResponse.json({ message: "Product data is required" }, { status: 400 });
         }
 
         user.cart.push({
