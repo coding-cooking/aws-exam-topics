@@ -17,8 +17,6 @@ type CartDrawerProps = {
 }
 
 export default function CartDrawer({ drawerOpen, setDrawerOpen, showIcon }: CartDrawerProps) {
-    const { data: session } = useSession();
-    const [isLoading, setIsLoading] = useState<boolean>(true)
     const { cartList, removeItem } = useCart();
 
     const safeCartList = Array.isArray(cartList) ? cartList : [];
@@ -72,7 +70,7 @@ export default function CartDrawer({ drawerOpen, setDrawerOpen, showIcon }: Cart
                                     <div>$ {item.price}</div>
                                 </div>
                             </div>
-                        ))) : <p className='mx-auto'>Your cart is empty.</p>
+                        ))) : <p className='mx-auto mt-40'>Your cart is empty.</p>
                         }
                     </div>
                     <div className='absolute bottom-0 w-full pb-8 bg-neutral-300'>
