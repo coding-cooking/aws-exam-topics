@@ -78,7 +78,7 @@ export default function CartDrawer({ drawerOpen, setDrawerOpen, showIcon }: Cart
                             <p className=''>Total</p>
                             {
                                 safeCartList.length ? (
-                                    <p> $ {cartList.reduce((acc, cur) => acc + Number(cur.price), 0).toFixed(2)} </p>
+                                    <p> $ {safeCartList.reduce((acc, cur) => acc + Number(cur.price), 0).toFixed(2)} </p>
                                 )
                                     : (<p>$ 0.00</p>)}
                         </div>

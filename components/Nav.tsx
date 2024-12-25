@@ -10,7 +10,7 @@ export default function Nav() {
     const [providers, setProviders] = useState<null | Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider>>(null);
     const { data: session } = useSession();
     const [toggleDropdown, setToggleDropdown] = useState<boolean>(false);
-    const { drawerOpen, setDrawerOpen } = useCart(session);
+    const { drawerOpen, setDrawerOpen } = useCart();
 
     useEffect(() => {
         const setUpProviders = async () => {
