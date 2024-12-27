@@ -29,6 +29,8 @@ export async function GET(req: NextRequest) {
 
         const cart = user.cart;
 
+        console.log('cart is', cart)
+
         return NextResponse.json(cart, { status: 200 });
     } catch (error) {
         console.error('Error fetching cart data:', error);

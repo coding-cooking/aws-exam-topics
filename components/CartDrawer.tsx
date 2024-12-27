@@ -4,9 +4,9 @@ import useCart from '@/hooks/useCart';
 import { UserType } from '@/model/User';
 import * as Dialog from '@radix-ui/react-dialog';
 import { MoveRight, ShoppingCart, Trash2 } from 'lucide-react';
-import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import { Dispatch, SetStateAction, useState } from 'react';
+import Link from 'next/link';
+import { Dispatch, SetStateAction } from 'react';
 
 type SessionUser = Omit<UserType, '_id' | 'password'>
 
@@ -83,13 +83,18 @@ export default function CartDrawer({ drawerOpen, setDrawerOpen, showIcon }: Cart
                                     : (<p>$ 0.00</p>)}
                         </div>
                         <div className='flex justify-center'>
-                            <button className='w-3/4 h-[40px] bg-emerald-700 text-white rounded-lg'>
-                                View Cart
-                            </button>
+                            <Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/cart`} className='w-3/4' >
+                                <button
+                                    className='w-full h-[40px] bg-emerald-700 text-white rounded-lg'
+                                    onClick={() => setDrawerOpen(false)}>
+                                    View Cart
+                                </button>
+                            </Link>
+
                         </div>
                     </div>
                 </Dialog.Content>
             </Dialog.Portal>
-        </Dialog.Root>
+        </Dialog.Root >
     )
 }

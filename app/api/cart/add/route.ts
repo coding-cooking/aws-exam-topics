@@ -35,13 +35,14 @@ export async function POST(req: NextRequest) {
         if (!product) {
             return NextResponse.json({ message: "Product data is required" }, { status: 400 });
         }
-
         user.cart.push({
             name: product.name,
             description: product.description,
             image: product.image,
             handle: product.handle,
             price: product.price,
+            priceId: product.priceId,
+            quantity: product.quantity
         });
 
         // // Generate an activation code
