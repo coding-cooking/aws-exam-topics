@@ -27,7 +27,7 @@ const UserSchema = new Schema({
         type: String,
     },
     subscriptionProducts: [{
-        type: { type: String },
+        product: { type: String },
         activationDate: { type: Date },
         expirationDate: { type: Date }
     }],
@@ -47,7 +47,7 @@ const UserSchema = new Schema({
     }]
 });
 export type SubscriptionProducttype = {
-    type: string;
+    product: string;
     activationDate: Date;
     expirationDate: Date;
 }

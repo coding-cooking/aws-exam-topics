@@ -1,6 +1,6 @@
 'use client'
 
-import { checkoutItemType } from "@/app/api/checkout-session/route"
+import { checkoutItemType } from "@/app/cart/page"
 import { Button } from "@/components/ui/button"
 import { useSearchParams } from "next/navigation"
 

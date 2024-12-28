@@ -6,9 +6,11 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 
-export type checkoutItmeType = {
-    priceId: string,
-    quantity: number
+export type checkoutItemType = {
+    id: string;
+    name: string;
+    priceId: string;
+    quantity: number;
 }
 
 export default function cartPage() {
@@ -16,14 +18,13 @@ export default function cartPage() {
     const { data: session } = useSession();
     const safeCartList = Array.isArray(cartList) ? cartList : [];
 
-    console.log('safeCartList', safeCartList)
-
     async function handleCheckout() {
         if (!session) {
             console.log("User is not authenticated");
             return;
         }
-        const items: checkoutItmeType[] = safeCartList.map(item => ({
+        const items: checkoutItemType[] = safeCartList.map(item => ({
+            id: item._id,
             name: item.name,
             priceId: item.priceId,
             quantity: 1
