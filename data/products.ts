@@ -15,7 +15,7 @@ export const products = [
         image: '/saa-c03.jpg',
         handle: 'saa-c03',
         price: '60',
-        priceId: 'price_1Qa31QD0b0x5ww07YUTYgxeS'
+        priceId: 'price_1Qa31QDObOx5wwO7YUTYgxeS'
     },
     {
         name: 'DOP-C02',
@@ -23,7 +23,7 @@ export const products = [
         image: '/dop-c02.jpeg',
         handle: 'dop-c02',
         price: '80',
-        priceId: 'price_1Qa320D0b0x5ww07hY04922P'
+        priceId: 'price_1Qa320DObOx5wwO7hY04922P'
     },
     {
         name: 'SAP-C02',
@@ -31,6 +31,6 @@ export const products = [
         image: '/sap-c02.jpeg',
         handle: 'sap-c02',
         price: '120',
-        priceId: 'price_1Qa32UD0b0x5ww07GaU2EL4Y'
+        priceId: 'price_1Qa32UDObOx5wwO7GaU2EL4Y'
     },
 ]

@@ -2,15 +2,20 @@ import Stripe from 'stripe';
 import { checkoutItmeType } from '@/app/cart/page';
 import { NextRequest, NextResponse } from 'next/server';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string); // Use your Stripe secret key
+export type checkoutItemType = {
+    name: string;
+    priceId: string;
+    quantity:string;
+}
 
-export async function POST(req:NextRequest, res:NextResponse) {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string); 
+
+export async function POST(req: NextRequest, res: NextResponse) {
     try {
-        // Extract items from the request body
         const body = await req.json()
         const { items } = body;
 
-        console.log('Received items:', items);
+        const successParams = new URLSearchParams({items: JSON.stringify(items)}).toString();
 
         const lineItems = items.map((item: checkoutItmeType) => {
             if (!item.priceId?.startsWith('price_')) {
@@ -22,17 +27,21 @@ export async function POST(req:NextRequest, res:NextResponse) {
             };
         });
 
-
-        // Create Checkout Session
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items: lineItems,
             mode: 'payment',
-            success_url: `${req.headers.origin}/success`, // Redirect on success
-            cancel_url: `${req.headers.origin}/cancel`, // Redirect on cancel
+            success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/checkout-success?${successParams}`,
+            cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/checkout-cancel`,
         });
-        return NextResponse.json({ url: session.url }, { status: 200 }); // Return the checkout URL
-    } catch (error) {
-        console.error('Stripe session creation error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });     }
+        return NextResponse.json({ url: session.url }, { status: 200 });
+    } catch (err: unknown) {
+        if (err instanceof Stripe.errors.StripeError) {
+            console.error('Stripe session creation error:', err);
+            return NextResponse.json({error: err.message}, {status: err.statusCode || 500});
+        }
+        const error = err as Error;
+        console.error('Unexpected error:', error);
+        return NextResponse.json({error: error.message}, {status: 500});
+    }
 }

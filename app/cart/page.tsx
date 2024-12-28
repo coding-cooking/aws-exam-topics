@@ -24,6 +24,7 @@ export default function cartPage() {
             return;
         }
         const items: checkoutItmeType[] = safeCartList.map(item => ({
+            name: item.name,
             priceId: item.priceId,
             quantity: 1
         }))
