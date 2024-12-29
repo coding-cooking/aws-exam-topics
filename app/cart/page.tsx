@@ -29,7 +29,7 @@ export default function cartPage() {
             priceId: item.priceId,
             quantity: 1
         }))
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/checkout-session`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/checkout`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

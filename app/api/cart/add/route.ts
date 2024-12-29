@@ -6,7 +6,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { isValidObjectId } from "mongoose";
 
 export async function POST(req: NextRequest) {
-    console.log('this is the add route')
     try {
         await dbConnect();
 
