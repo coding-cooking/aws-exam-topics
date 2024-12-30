@@ -34,7 +34,21 @@ export async function POST(req: NextRequest) {
         const activationSuccess = user.activationInfos.some((info: ActivationInfoType) => info.code === activationValue.toString() && info.used === false)
 
         if (activationSuccess){
-            
+            // also need to set the code.used to true
+            const result = await User.updateOne(
+                {
+                    _id: userId,
+                    'activationInfos.code': activationValue.toString()
+                },
+                {
+                    $set: { 'activationInfos.$.used': true }
+                }
+            );
+
+            if (result.modifiedCount === 0) {
+                return NextResponse.json({ message: "Failed to update activation status" }, { status: 400 });
+            }
+
             return NextResponse.json({message: "Activate product successfully"}, {status: 200})
         }else{
             return NextResponse.json({ message: "Activate product failed" }, { status: 400 })

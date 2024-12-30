@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { useState } from "react"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 export default function ActicationForm() {
     const [activationValue, setActivationValue] = useState<string>('');
@@ -35,25 +35,30 @@ export default function ActicationForm() {
     }
 
     return (
-        <form
-            className="mt-4 flex flex-col md:flex-row justify-center items-center gap-8"
-            onSubmit={handleSubmit}
-        >
-            <Input type="text"
-                placeholder="Activation Code"
-                className="w-64 h-12"
-                value={activationValue}
-                onChange={(e) => setActivationValue(e.target.value)}
+        <>
+            <form
+                className="mt-4 flex flex-col md:flex-row justify-center items-center gap-8"
+                onSubmit={handleSubmit}
+            >
+                <Input type="text"
+                    placeholder="Activation Code"
+                    className="w-64 h-12"
+                    value={activationValue}
+                    onChange={(e) => setActivationValue(e.target.value)}
 
-            />
-            <Button
-                variant="destructive"
-                className="w-40 h-12 bg-emerald-700 rounded-xl"
-            >Activate the product</Button>
+                />
+                <Button
+                    variant="destructive"
+                    className="w-40 h-12 bg-emerald-700 rounded-xl"
+                >Activate the product</Button>
+            </form>
+            {error && <div className="text-red-500 mt-8">{error}</div>}
+            {success &&
+                <div className="text-green-500 mt-8">Product activated successfully!</div>
+                //also need the button to the product
+            }
+        </>
 
-            {error && <div className="text-red-500">{error}</div>}
-            {success && <div className="text-green-500">Product activated successfully!</div>}
-        </form>
 
     )
 }
