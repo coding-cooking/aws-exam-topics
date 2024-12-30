@@ -31,24 +31,38 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: "User not found" }, { status: 404 });
         }
 
-        const activationSuccess = user.activationInfos.some((info: ActivationInfoType) => info.code === activationValue.toString() && info.used === false)
+        const activationCode = user.activationInfos.find((info: ActivationInfoType) => info.code === activationValue.toString() && info.used === false)
 
-        if (activationSuccess){
+        if (activationCode){
             // also need to set the code.used to true
+            // and add the specific role
+            const newRole = (() => {
+                switch (activationCode.product) {
+                    case "SAA-C03":
+                        return 'saaUser';
+                    case "DOP-C02":
+                        return 'dopUser';
+                    case "SAP-C02":
+                        return 'sapUser';
+                    default:
+                        return null;
+                }
+            })();
+
             const result = await User.updateOne(
                 {
                     _id: userId,
                     'activationInfos.code': activationValue.toString()
                 },
                 {
-                    $set: { 'activationInfos.$.used': true }
+                    $set: { 'activationInfos.$.used': true},
+                    $push: { roles: newRole }
                 }
             );
 
             if (result.modifiedCount === 0) {
                 return NextResponse.json({ message: "Failed to update activation status" }, { status: 400 });
             }
-
             return NextResponse.json({message: "Activate product successfully"}, {status: 200})
         }else{
             return NextResponse.json({ message: "Activate product failed" }, { status: 400 })
