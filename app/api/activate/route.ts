@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
 
         const body = await req.json()
 
-        const { activationValue} = body;
+        const { activationValue } = body;
 
         const session = await getServerSession(options);
 
@@ -33,21 +33,34 @@ export async function POST(req: NextRequest) {
 
         const activationCode = user.activationInfos.find((info: ActivationInfoType) => info.code === activationValue.toString() && info.used === false)
 
-        if (activationCode){
+        if (activationCode) {
             // also need to set the code.used to true
             // and add the specific role
+            // also need to think about user buy the same product multiple times, mutiple code, multiple same role
             const newRole = (() => {
                 switch (activationCode.product) {
                     case "SAA-C03":
-                        return 'saaUser';
+                        if (!user.roles.includes('saaUser')){
+                            return 'saaUser';
+                        }
+                        break
                     case "DOP-C02":
-                        return 'dopUser';
+                        if (!user.roles.includes('dopUser')) {
+                            return 'dopUser';
+                        }
+                        break
                     case "SAP-C02":
-                        return 'sapUser';
+                        if (!user.roles.includes('sapUser')) {
+                            return 'sapUser';
+                        }
+                        break
                     default:
                         return null;
                 }
             })();
+
+            const expirationDate = new Date();
+            expirationDate.setFullYear(expirationDate.getFullYear() + 1);
 
             const result = await User.updateOne(
                 {
@@ -55,7 +68,11 @@ export async function POST(req: NextRequest) {
                     'activationInfos.code': activationValue.toString()
                 },
                 {
-                    $set: { 'activationInfos.$.used': true},
+                    $set: {
+                        'activationInfos.$.used': true,
+                        'subscriptionProducts.$.activationDate': new Date(),
+                        'subscriptionProducts.$.expirationDate': expirationDate
+                    },
                     $push: { roles: newRole }
                 }
             );
@@ -63,13 +80,13 @@ export async function POST(req: NextRequest) {
             if (result.modifiedCount === 0) {
                 return NextResponse.json({ message: "Failed to update activation status" }, { status: 400 });
             }
-            return NextResponse.json({message: "Activate product successfully"}, {status: 200})
-        }else{
+            return NextResponse.json({ message: "Activate product successfully" }, { status: 200 })
+        } else {
             return NextResponse.json({ message: "Activate product failed" }, { status: 400 })
         }
-    }catch(error){
+    } catch (error) {
         console.error('Error activating the prodict', error);
-        return NextResponse.json({ message:"Internal server error"},{status: 500})
+        return NextResponse.json({ message: "Internal server error" }, { status: 500 })
     }
 
 }
