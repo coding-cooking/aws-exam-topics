@@ -14,7 +14,7 @@ declare module "next-auth" {
             accessToken?: string;
             roles: string[];
             subscriptionProducts?: Array<{
-                type: string;
+                product: string;
                 activationDate: Date;
                 expirationDate: Date;
             }>;
@@ -24,7 +24,7 @@ declare module "next-auth" {
                 used: boolean;
             }>;
             cart: Array<{
-                _id: string;
+                // _id: string;
                 name: string;
                 description: string;
                 image: string;

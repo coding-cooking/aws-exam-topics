@@ -13,7 +13,7 @@ export type ProviderProps = {
             roles: string[];
             accessToken?: string;
             subscriptionProducts?: Array<{
-                type: string;
+                product: string;
                 activationDate: Date;
                 expirationDate: Date;
             }>;
