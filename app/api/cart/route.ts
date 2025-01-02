@@ -1,11 +1,11 @@
 import { dbConnect } from "@/utils/dbConnect";
 import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { options } from "../auth/[...nextauth]/options";
 import User from "@/model/User";
 import { isValidObjectId } from "mongoose";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
     try {
         await dbConnect();
 

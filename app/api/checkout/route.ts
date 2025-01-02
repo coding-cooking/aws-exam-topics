@@ -6,7 +6,7 @@ import { options } from '../auth/[...nextauth]/options';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
     try {
         const body = await req.json()
         const { items } = body;
@@ -39,33 +39,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
             }
         });
         return NextResponse.json({ url: checkoutsession.url }, { status: 200 });
-
-        // await dbConnect();
-        // if (session) {
-        //     const userId = session.user.id;
-        //     const user = await User.findById(userId);
-        //     if (Array.isArray(user.cart)) {
-        //         items.forEach((item: checkoutItemType) => {
-        //             //after checkout, add product(s) to user
-        //             user.subscriptionProducts.push({
-        //                 product: item.name,
-        //                 activationDate: null,
-        //                 expirationDate: null,
-        //             })
-        //             //after checkout, add activationCode to user
-        //             const activationCode = generateActivationCode();
-        //             user.activationInfos.push({
-        //                 code: activationCode,
-        //                 product: item.name,
-        //                 used: false,
-        //             });
-        //             //after checkout, delete the items in cart
-        //             user.cart = user.cart.filter((i: CartItemType) => i._id.toString() !== item.id);
-        //         })
-        //         await user.save();
-        //     }
-        // }
-
     } catch (err: unknown) {
         if (err instanceof Stripe.errors.StripeError) {
             console.error('Stripe session creation error:', err);

@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
     const sig = req.headers.get('stripe-signature');
 
     if (!sig) {
@@ -25,7 +25,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
             sig,
             endpointSecret
         );
-        console.log('event.type are', event.type)
         // Handle the event
         switch (event.type) {
             case 'payment_intent.created':
@@ -46,13 +45,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
                         }
                     );
                     const lineItems = checkoutSession.line_items?.data || [];
-                    // if (checkoutSession.metadata) {
-                    //     console.log('checkoutSession', checkoutSession)
-                    //     console.log('checkoutSession.metadata', checkoutSession.metadata)
-                    //     console.log('metadata.metadata', checkoutSession.metadata.metadata)
-                    // }
-                    console.log('lineItems are', lineItems)
-
+                    
                     await dbConnect();
                     const userId = checkoutSession.metadata?.userId;
                     const user = await User.findById(userId);
@@ -73,13 +66,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
                                 used: false,
                             });
                             //after checkout, delete the items in cart
-                            console.log('item.id is', item.id)
                             user.cart = user.cart.filter((i: CartItemType) => i.name !== item.description);
                         })
                         await user.save();
                     }
-                } else {
-                    console.log('no session')
                 }
                 break;
             default:

@@ -13,7 +13,7 @@ export type checkoutItemType = {
     quantity: number;
 }
 
-export default function cartPage() {
+export default function CartPage() {
     const { cartList, removeItem } = useCart();
     const { data: session } = useSession();
     const safeCartList = Array.isArray(cartList) ? cartList : [];

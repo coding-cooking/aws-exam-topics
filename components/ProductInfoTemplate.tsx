@@ -2,9 +2,7 @@
 
 import { productType } from "@/data/products";
 import useCart from "@/hooks/useCart";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useState } from "react";
 import CartDrawer from "./CartDrawer";
 
 type ProductInfoTemplateProps = {
@@ -12,7 +10,6 @@ type ProductInfoTemplateProps = {
 }
 
 export default function ProductInfoTemplate({ product }: ProductInfoTemplateProps) {
-    const { data: session } = useSession();
     const { handleAddToCart, adding, drawerOpen, setDrawerOpen } = useCart();
 
     return (

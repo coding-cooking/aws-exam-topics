@@ -1,14 +1,11 @@
 'use client'
 
 import useCart from '@/hooks/useCart';
-import { UserType } from '@/model/User';
 import * as Dialog from '@radix-ui/react-dialog';
 import { MoveRight, ShoppingCart, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Dispatch, SetStateAction } from 'react';
-
-type SessionUser = Omit<UserType, '_id' | 'password'>
 
 type CartDrawerProps = {
     drawerOpen: boolean;

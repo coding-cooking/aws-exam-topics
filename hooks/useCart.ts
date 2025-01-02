@@ -8,7 +8,6 @@ export default function useCart() {
     const [cartList, setCartList] = useState<CartItemType[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [adding, setAdding] = useState<boolean>(false)
-    // const [error, setError] = useState(null);
     const [drawerOpen, setDrawerOpen] = useState<boolean>(false)
 
     async function updateCart() {
@@ -22,7 +21,6 @@ export default function useCart() {
             setCartList(safeCartList);
         } catch (error) {
             console.error('Error fetching cart:', error);
-            // setError(error);
             setCartList([]);
         } finally {
             setIsLoading(false);
@@ -45,8 +43,8 @@ export default function useCart() {
                 body: JSON.stringify({ product })
             })
 
-            if(response.ok){
-                await updateCart(); 
+            if (response.ok) {
+                await updateCart();
                 console.log('Item added successfully');
                 setDrawerOpen(true);
             } else {
@@ -88,8 +86,7 @@ export default function useCart() {
         if (session) {
             updateCart();
         }
-    }, [session]);
+    }, [session, updateCart]);
 
     return { cartList, isLoading, handleAddToCart, removeItem, adding, drawerOpen, setDrawerOpen };
-
 }
