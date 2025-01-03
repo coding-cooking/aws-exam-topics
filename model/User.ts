@@ -43,7 +43,7 @@ const UserSchema = new Schema({
         handle: { type: String },
         price: { type: String },
         priceId: { type: String },
-        quantity: { type: Number },
+        quantity: { type: Number, default: 1 },
     }]
 });
 export type SubscriptionProducttype = {

@@ -4,6 +4,8 @@ import { productType } from "@/data/products";
 import { useCart } from '@/context/CartContext';
 import Image from "next/image";
 import CartDrawer from "./CartDrawer";
+import { useSession } from "next-auth/react";
+import { Button } from "./ui/button";
 
 type ProductInfoTemplateProps = {
     product: productType;
@@ -11,6 +13,15 @@ type ProductInfoTemplateProps = {
 
 export default function ProductInfoTemplate({ product }: ProductInfoTemplateProps) {
     const { handleAddToCart, adding, drawerOpen, setDrawerOpen } = useCart();
+    const { data: session } = useSession();
+    const productNames = session?.user.subscriptionProducts?.map(item => item.product);
+    const cartItemNames = session?.user.cart.map(item => item.name);
+
+    function checkProductExist(ProductName: string) {
+        const hasSameProduct =
+            productNames?.includes(ProductName) || cartItemNames?.includes(ProductName)
+        return hasSameProduct
+    }
 
     return (
         <div className="w-[full] h-[full] flex flex-col justify-center item-start pt-20 pl-20">
@@ -23,12 +34,13 @@ export default function ProductInfoTemplate({ product }: ProductInfoTemplateProp
                 </div>
                 <div className="">
                     <p>{product.description}</p>
-                    <button
+                    <Button
                         className="w-36 h-16 mx-20 my-20 bg-emerald-700 text-white rounded-lg"
                         onClick={() => { handleAddToCart(product) }}
+                        disabled={checkProductExist(product.name)}
                     >
                         {adding ? 'Adding to Cart...' : 'Add to Cart'}
-                    </button>
+                    </Button>
                 </div>
             </div>
             <CartDrawer drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} showIcon={false} />

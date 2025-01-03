@@ -1,8 +1,22 @@
+'use client'
+
 import { products } from "@/data/products";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "./ui/button";
 
 export default function TopicCard() {
+    const { data: session } = useSession();
+    const productNames = session?.user.subscriptionProducts?.map(item => item.product);
+    const cartItemNames = session?.user.cart.map(item => item.name);
+
+    function checkProductExist(ProductName: string) {
+        const hasSameProduct =
+            productNames?.includes(ProductName) || cartItemNames?.includes(ProductName)
+        return hasSameProduct
+    }
+
     return (
         <div className="w-full h-full flex flex-col md:flex-row gap-20 justify-center items-center">
             {products.map(product => (
@@ -16,12 +30,16 @@ export default function TopicCard() {
                             <p className="text-sm text-slate-500">{product.description}</p>
                         </div>
                         <div>
-                            <Link href={`/topic/${product.handle}`}>
-                                <button className="w-[60px] h-[40px] bg-emerald-700 hover:bg-emerald-500 rounded-xl text-white hover:">Buy</button>
+                            <Link
+                                href={`/topic/${product.handle}`}
+                                onClick={(e) => checkProductExist(product.name) && e.preventDefault()}>
+                                <Button
+                                    className="w-[60px] h-[40px] bg-emerald-700 hover:bg-emerald-500 rounded-xl text-white hover:"
+                                    disabled={checkProductExist(product.name)}>
+                                    Buy</Button>
                             </Link>
                         </div>
                     </div>
-
                 </div>
             ))}
         </div>

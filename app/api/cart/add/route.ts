@@ -34,6 +34,11 @@ export async function POST(req: NextRequest) {
         if (!product) {
             return NextResponse.json({ message: "Product data is required" }, { status: 400 });
         }
+
+        //retrive db, is that product already exists in db?
+        //if not directly push, if yes, only add the quantity
+        //or if user has bought this product or add the cart, he/she can't add more 
+        
         user.cart.push({
             name: product.name,
             description: product.description,
@@ -43,16 +48,6 @@ export async function POST(req: NextRequest) {
             priceId: product.priceId,
             quantity: product.quantity
         });
-
-        // // Generate an activation code
-        // const activationCode = generateActivationCode();
-
-        // // Add activation info
-        // user.activationInfos.push({
-        //     code: activationCode,
-        //     product,
-        //     used: false,
-        // });
 
         await user.save();
 
