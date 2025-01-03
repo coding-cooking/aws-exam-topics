@@ -3,7 +3,17 @@ import { CartItemType } from "@/model/User";
 import { useSession } from "next-auth/react";
 import { createContext, useContext, useEffect, useState } from "react";
 
-const CartContext = createContext<ReturnType<typeof useCartState>>(null!);
+const defaultCartState: ReturnType<typeof useCartState> = {
+    cartList: [],
+    isLoading: false,
+    handleAddToCart: async () => { },
+    removeItem: async () => { },
+    adding: false,
+    drawerOpen: false,
+    setDrawerOpen: () => { }
+};
+
+const CartContext = createContext<ReturnType<typeof useCartState>>(defaultCartState);
 
 function useCartState() {
     const { data: session } = useSession();
