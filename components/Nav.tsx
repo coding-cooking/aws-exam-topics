@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import CartDrawer from "./CartDrawer";
-import useCart from "@/hooks/useCart";
+import { useCart } from '@/context/CartContext';
 
 export default function Nav() {
     const [providers, setProviders] = useState<null | Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider>>(null);

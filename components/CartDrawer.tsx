@@ -1,6 +1,6 @@
 'use client'
 
-import useCart from '@/hooks/useCart';
+import { useCart } from '@/context/CartContext';
 import * as Dialog from '@radix-ui/react-dialog';
 import { MoveRight, ShoppingCart, Trash2 } from 'lucide-react';
 import Image from 'next/image';
@@ -14,7 +14,7 @@ type CartDrawerProps = {
 }
 
 export default function CartDrawer({ drawerOpen, setDrawerOpen, showIcon }: CartDrawerProps) {
-    const { cartList, removeItem } = useCart();
+    const { cartList, removeItem, isLoading } = useCart();
 
     const safeCartList = Array.isArray(cartList) ? cartList : [];
 
@@ -54,7 +54,11 @@ export default function CartDrawer({ drawerOpen, setDrawerOpen, showIcon }: Cart
                         </div>
                     </div>
                     <div className='mt-8 flex flex-col gap-2 overflow-hidden'>
-                        {safeCartList.length ? (safeCartList.map(item => (
+                        {isLoading ? (
+                            <div className="flex justify-center items-center h-40">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500" />
+                            </div>
+                        ) : safeCartList.length ? (safeCartList.map(item => (
                             <div key={`${item.handle}-${item.description}`} className='w-11/12 mx-auto flex gap-2 p-4 border border-solid border-slate-300 rounded-lg'>
                                 <div>
                                     <Image src={item.image} alt={item.name} width={100} height={40} />
@@ -87,7 +91,6 @@ export default function CartDrawer({ drawerOpen, setDrawerOpen, showIcon }: Cart
                                     View Cart
                                 </button>
                             </Link>
-
                         </div>
                     </div>
                 </Dialog.Content>

@@ -1,14 +1,16 @@
 import { productType } from "@/data/products";
 import { CartItemType } from "@/model/User";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
-export default function useCart() {
+const CartContext = createContext<ReturnType<typeof useCartState>>(null!);
+
+function useCartState() {
     const { data: session } = useSession();
     const [cartList, setCartList] = useState<CartItemType[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [adding, setAdding] = useState<boolean>(false)
-    const [drawerOpen, setDrawerOpen] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [adding, setAdding] = useState<boolean>(false);
+    const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
     async function updateCart() {
         setIsLoading(true);
@@ -86,7 +88,16 @@ export default function useCart() {
         if (session) {
             updateCart();
         }
-    }, [session, updateCart]);
+    }, [session]);
 
     return { cartList, isLoading, handleAddToCart, removeItem, adding, drawerOpen, setDrawerOpen };
+}
+
+export function CartProvider({ children }: { children: React.ReactNode }) {
+    const cart = useCartState();
+    return <CartContext.Provider value={cart}>{children}</CartContext.Provider>;
+}
+
+export function useCart() {
+    return useContext(CartContext);
 }

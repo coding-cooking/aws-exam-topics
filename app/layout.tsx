@@ -5,11 +5,10 @@ import TopicsContext, { TopicType } from "@/context/TopicsContext";
 import { useEffect, useState } from "react";
 import Nav from "@/components/Nav";
 import Provider, { ProviderProps } from "@/context/Provider";
-import CartDrawer from "@/components/CartDrawer";
+import { CartProvider } from "@/context/CartContext";
 
 export default function RootLayout({ children, session }: ProviderProps) {
   const [topics, setTopics] = useState<TopicType[]>([]);
-  const [drawerOpen, setDrawerOpen] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchTopics = async () => {
@@ -29,9 +28,11 @@ export default function RootLayout({ children, session }: ProviderProps) {
       <TopicsContext.Provider value={topics}>
         <body>
           <Provider session={session}>
-            <Nav />
-            {/* <CartDrawer drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} showIcon={false} /> */}
-            {children}
+            <CartProvider>
+              <Nav />
+              {/* <CartDrawer drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} showIcon={false} /> */}
+              {children}
+            </CartProvider>
           </Provider>
         </body>
       </TopicsContext.Provider>

@@ -1,7 +1,7 @@
 'use client'
 
 import { productType } from "@/data/products";
-import useCart from "@/hooks/useCart";
+import { useCart } from '@/context/CartContext';
 import Image from "next/image";
 import CartDrawer from "./CartDrawer";
 

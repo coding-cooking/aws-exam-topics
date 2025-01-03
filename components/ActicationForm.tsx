@@ -29,6 +29,7 @@ export default function ActicationForm() {
                 setSuccess(false);
             }
         } catch (err) {
+            console.log(err)
             setError('Network error. Please try again.');
             setSuccess(false);
         }
