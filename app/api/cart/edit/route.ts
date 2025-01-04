@@ -1,7 +1,5 @@
 import { dbConnect } from "@/utils/dbConnect";
-import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-import { options } from "../../auth/[...nextauth]/options";
 import User from "@/model/User";
 import { CartItemType } from "@/model/User";
 import { isValidObjectId } from "mongoose";
@@ -30,6 +28,7 @@ export async function DELETE(req: NextRequest) {
         try {
             decodedToken = await verifyToken(token);
         } catch (error) {
+            console.error('Error verifying token:', error);
             return NextResponse.json({ message: "Invalid or expired token" }, { status: 401 });
         }
 

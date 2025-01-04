@@ -1,7 +1,5 @@
 import { dbConnect } from "@/utils/dbConnect";
-import { getServerSession } from "next-auth";
 import User from "@/model/User";
-import { options } from "../../auth/[...nextauth]/options";
 import { NextRequest, NextResponse } from "next/server";
 import { isValidObjectId } from "mongoose";
 import { verifyToken } from "@/utils/verifyToken";
@@ -29,6 +27,7 @@ export async function POST(req: NextRequest) {
         try {
             decodedToken = await verifyToken(token);
         } catch (error) {
+            console.error('Error verifying token:', error);
             return NextResponse.json({ message: "Invalid or expired token" }, { status: 401 });
         }
 

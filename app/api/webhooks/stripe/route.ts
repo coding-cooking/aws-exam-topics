@@ -77,8 +77,8 @@ export async function POST(req: NextRequest) {
         }
         return NextResponse.json({ received: true });
 
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error('Error verifying webhook signature:', err);
-        return NextResponse.json({ message: `Webhook Error: ${err.message}` }, { status: 400 })
+        return NextResponse.json({ message: `Webhook Error: ${err}` }, { status: 400 })
     }
 } 
