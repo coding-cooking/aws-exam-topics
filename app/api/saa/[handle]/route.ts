@@ -4,10 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = 'force-static';
 
-export async function GET(req: NextRequest, { params }: { params: { handle: string }} ) {
-    const { handle } = await params;
+export async function GET(req: NextRequest, context: { params: { handle: string }} ) {
+    const { handle } = context.params;
 
-    if (!(await params).handle) {
+    if (!handle) {
         return NextResponse.json({ message: 'Handle parameter is required!' }, { status: 404 });
     }
 
