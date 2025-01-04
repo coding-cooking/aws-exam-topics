@@ -14,8 +14,8 @@ type ProductInfoTemplateProps = {
 export default function ProductInfoTemplate({ product }: ProductInfoTemplateProps) {
     const { handleAddToCart, adding, drawerOpen, setDrawerOpen } = useCart();
     const { data: session } = useSession();
-    const productNames = session?.user.subscriptionProducts?.map(item => item.product);
-    const cartItemNames = session?.user.cart.map(item => item.name);
+    const productNames = session?.user.subscriptionProducts && session.user.subscriptionProducts?.map(item => item.product);
+    const cartItemNames = session?.user.cart && session.user.cart.map(item => item.name);
 
     function checkProductExist(ProductName: string) {
         const hasSameProduct =
@@ -35,7 +35,7 @@ export default function ProductInfoTemplate({ product }: ProductInfoTemplateProp
                 <div className="">
                     <p>{product.description}</p>
                     <Button
-                        className="w-36 h-16 mx-20 my-20 bg-emerald-700 text-white rounded-lg"
+                        className="w-36 h-16 mx-20 my-20 bg-emerald-700 hover:bg-emerald-500 text-white rounded-lg"
                         onClick={() => { handleAddToCart(product) }}
                         disabled={checkProductExist(product.name)}
                     >

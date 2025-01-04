@@ -5,6 +5,7 @@ import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import { Profile as DefaultProfile } from "next-auth";
 import { JWT } from "next-auth/jwt";
+import jwt from 'jsonwebtoken';
 
 interface CustomProfile extends DefaultProfile {
     picture?: string | { data?: { url?: string } };
@@ -30,15 +31,30 @@ export const options: NextAuthOptions = {
         strategy: "jwt",
     },
     callbacks: {
-        async jwt({ token, user, account }: { token: ExtendedToken; user: AuthUser; account?: Account | null}) {
-            if (account && user) {
-                token.accessToken = account.access_token as string; 
-                token.id = user.id; 
+        async jwt({ token, user}: { token: ExtendedToken; user: AuthUser}) {
+            if (user) {
+                const dbUser = await User.findOne({ email: token.email });
+                // console.log('user info $$$$', dbUser, dbUser._id)
+                const accessToken = jwt.sign(
+                    {
+                        userId: dbUser._id.toString(),
+                        email: user.email
+                    },
+                    process.env.NEXTAUTH_SECRET!,
+                    { expiresIn: '1d' } 
+                );
+                return {
+                    ...token,
+                    accessToken,
+                    userId: dbUser._id.toString()
+                };
             }
+            // console.log('token info $$$$', token)
             return token;
         },
-        async session({ session, token }:{ session: Session; token: ExtendedToken
-    }) {
+        async session({ session, token }: {
+            session: Session; token: ExtendedToken
+        }) {
             if (session.user) {
                 const sessionUser: UserType | null = await User.findOne({ email: session.user.email });
                 if (sessionUser && token) {
@@ -98,7 +114,7 @@ export const options: NextAuthOptions = {
                             provider: account.provider,
                             roles: ['user'],
                             subscriptionTypes: [],
-                            activationInfos:[],
+                            activationInfos: [],
                             cart: [],
                         });
                     }

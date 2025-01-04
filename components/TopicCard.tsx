@@ -8,8 +8,8 @@ import { Button } from "./ui/button";
 
 export default function TopicCard() {
     const { data: session } = useSession();
-    const productNames = session?.user.subscriptionProducts?.map(item => item.product);
-    const cartItemNames = session?.user.cart.map(item => item.name);
+    const productNames = session?.user.subscriptionProducts && session.user.subscriptionProducts?.map(item => item.product);
+    const cartItemNames = session?.user.cart && session.user.cart.map(item => item.name);
 
     function checkProductExist(ProductName: string) {
         const hasSameProduct =
@@ -34,7 +34,7 @@ export default function TopicCard() {
                                 href={`/topic/${product.handle}`}
                                 onClick={(e) => checkProductExist(product.name) && e.preventDefault()}>
                                 <Button
-                                    className="w-[60px] h-[40px] bg-emerald-700 hover:bg-emerald-500 rounded-xl text-white hover:"
+                                    className="w-[60px] h-[40px] bg-emerald-700 hover:bg-emerald-500 rounded-xl text-white"
                                     disabled={checkProductExist(product.name)}>
                                     Buy</Button>
                             </Link>

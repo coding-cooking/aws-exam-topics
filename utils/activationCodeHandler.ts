@@ -1,4 +1,4 @@
-import User, { activationInfoType } from "@/model/User";
+import User, { ActivationInfoType } from "@/model/User";
 
 export async function validateActivationCode(
     email: string,
@@ -22,8 +22,8 @@ export async function validateActivationCode(
             }
         }
 
-        const codeEntry: activationInfoType = user.activationInfos.find(
-            (info: activationInfoType) => info.code === activationCode && !info.used
+        const codeEntry: ActivationInfoType = user.activationInfos.find(
+            (info: ActivationInfoType) => info.code === activationCode && !info.used
         )
 
         if (!codeEntry) {

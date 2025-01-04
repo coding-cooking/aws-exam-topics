@@ -4,20 +4,35 @@ import User from "@/model/User";
 import { options } from "../../auth/[...nextauth]/options";
 import { NextRequest, NextResponse } from "next/server";
 import { isValidObjectId } from "mongoose";
+import { verifyToken } from "@/utils/verifyToken";
 
 export async function POST(req: NextRequest) {
     try {
         await dbConnect();
 
-        const body = await req.json()
+        const body = await req.json();
 
-        const session = await getServerSession(options);
+        const authHeader = req.headers.get('authorization');
 
-        if (!session) {
-            return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
+        if (!authHeader?.startsWith('Bearer ')) {
+            return NextResponse.json({ message: "Invalid authorization header" }, { status: 401 });
         }
 
-        const userId = session.user.id;
+        const token = authHeader.split(' ')[1];
+
+        if (!token) {
+            return NextResponse.json({ message: "No token provided" }, { status: 401 });
+        }
+
+        let decodedToken;
+
+        try {
+            decodedToken = await verifyToken(token);
+        } catch (error) {
+            return NextResponse.json({ message: "Invalid or expired token" }, { status: 401 });
+        }
+
+        const userId = decodedToken && decodedToken.userId;
 
         if (!isValidObjectId(userId)) {
             return NextResponse.json({ message: "Invalid user ID" }, { status: 400 });
