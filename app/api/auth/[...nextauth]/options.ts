@@ -34,7 +34,6 @@ export const options: NextAuthOptions = {
         async jwt({ token, user}: { token: ExtendedToken; user: AuthUser}) {
             if (user) {
                 const dbUser = await User.findOne({ email: token.email });
-                // console.log('user info $$$$', dbUser, dbUser._id)
                 const accessToken = jwt.sign(
                     {
                         userId: dbUser._id.toString(),
@@ -49,7 +48,6 @@ export const options: NextAuthOptions = {
                     userId: dbUser._id.toString()
                 };
             }
-            // console.log('token info $$$$', token)
             return token;
         },
         async session({ session, token }: {
