@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = 'force-static';
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ handle: string }> } ) {
+export async function GET(req: NextRequest, { params }: { params: { handle: string }} ) {
     const { handle } = await params;
 
     if (!(await params).handle) {
