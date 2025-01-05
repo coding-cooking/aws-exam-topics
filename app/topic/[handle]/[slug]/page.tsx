@@ -11,16 +11,17 @@ export async function generateStaticParams() {
         return [];
     } else {
         return topics.map((topic) => ({
+            handle: topic.topicType,
             slug: topic.topicId,
         }))
     }
 }
 
-export default async function TopicPage({ params }: { params: Promise<{ slug: string }> }) {
-    const { slug } = await params;
+export default async function TopicPage({ params }: { params: Promise<{ handle: string, slug: string }> }) {
+    const { handle, slug } = await params;
 
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/topic/${slug}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/topic/${handle}/${slug}`);
 
         if (!response.ok) {
             return notFound();
@@ -39,10 +40,3 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
     }
 }
 
-// async function TopicContent({ fetchTopicData }: { slug: string, fetchTopicData: () => Promise<TopicType | null> }) {
-//     const topic = await fetchTopicData();  // Await the async data fetching
-
-//     if (!topic) return notFound();
-
-//     return <TopicTemplate topic={topic} />;
-// }

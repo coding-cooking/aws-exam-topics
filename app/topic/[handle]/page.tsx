@@ -19,7 +19,7 @@ export default function ProductInfoPage({ params }: { params: Promise<{ handle: 
         } else {
             const product = response;
             return session?.user.roles.includes(`${handle}User`) ?
-                <TopicList product={product} /> :
+                <TopicList product={product} handle={handle} /> :
                 < ProductInfoTemplate product={product} />
         }
     } catch (error) {

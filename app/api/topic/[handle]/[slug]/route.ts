@@ -4,12 +4,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = 'force-static';
 
-export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
-    const { slug } = await params;
+export async function GET(request: NextRequest, { params }: { params: { handle: string, slug: string } }) {
 
-    if (!slug) {
-        return NextResponse.json({ message: 'Handle parameter is required!' }, { status: 404 });
+    if (!params || !params.handle || !params.slug) {
+        return NextResponse.json({ message: 'Handle and slug parameters are required!' }, { status: 404 });
     }
+    const { handle, slug } = await params;
 
     try {
         await dbConnect();
