@@ -12,6 +12,8 @@ export async function POST(req: NextRequest) {
 
         const authHeader = req.headers.get('authorization');
 
+        console.log('authHeader', authHeader)
+
         if (!authHeader?.startsWith('Bearer ')) {
             return NextResponse.json({ message: "Invalid authorization header" }, { status: 401 });
         }

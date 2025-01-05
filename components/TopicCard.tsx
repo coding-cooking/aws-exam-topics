@@ -36,7 +36,8 @@ export default function TopicCard() {
                                 <Button
                                     className="w-[60px] h-[40px] bg-emerald-700 hover:bg-emerald-500 rounded-xl text-white"
                                     disabled={checkProductExist(product.name)}>
-                                    Buy</Button>
+                                    {session?.user.subscriptionProducts?.some(item => item.product === product.name) ? 'Do it' : 'Buy'}
+                                </Button>
                             </Link>
                         </div>
                     </div>

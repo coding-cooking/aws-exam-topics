@@ -15,6 +15,7 @@ type Options = Record<string, Option>;
 export type TopicType = {
     _id: string;
     topicId: string;
+    topicType: string;
     question: Question;
     options: Options;
     correctAnswers: string[];
