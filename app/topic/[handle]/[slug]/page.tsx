@@ -1,7 +1,9 @@
+import { options } from "@/app/api/auth/[...nextauth]/options";
 import TopicTemplate from "@/components/TopicTemplate";
 import { TopicType } from "@/context/TopicsContext";
+import { getServerSession } from "next-auth";
+// import { useSession } from "next-auth/react";
 import { notFound } from "next/navigation";
-import { Suspense } from 'react';
 
 export async function generateStaticParams() {
     const topics: TopicType[] = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/topic`)
@@ -19,6 +21,11 @@ export async function generateStaticParams() {
 
 export default async function TopicPage({ params }: { params: Promise<{ handle: string, slug: string }> }) {
     const { handle, slug } = await params;
+    const session = await getServerSession(options);
+
+    if (!session?.user?.roles?.includes(`${handle}User`)) {
+        return notFound();
+    }
 
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/topic/${handle}/${slug}`);
@@ -31,8 +38,17 @@ export default async function TopicPage({ params }: { params: Promise<{ handle: 
 
         if (!topic) return notFound();
 
+        // console.log('has right', session?.user.roles.includes(`${handle}Role`))
+
         return (
             <TopicTemplate topic={topic} />
+            // {
+            //     session.user.roles.includes(`${handle}Role`) ?
+            //         <TopicTemplate topic={topic} />
+            //         : notFound()
+            // }
+
+
         );
     } catch (err) {
         console.error("Error fetching topic:", err);

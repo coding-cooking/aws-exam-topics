@@ -12,7 +12,7 @@ type TopicTemplateProps = {
 export default function TopicTemplate({ topic }: TopicTemplateProps) {
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const [submitted, setSubmitted] = useState<boolean>(false);
-    const topics: TopicType[] = useContext(TopicsContext)
+    const topics: TopicType[] = useContext(TopicsContext);
 
     const handleClick = (e: React.FormEvent, option: string) => {
         e.preventDefault();

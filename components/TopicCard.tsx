@@ -32,10 +32,12 @@ export default function TopicCard() {
                         <div>
                             <Link
                                 href={`/topic/${product.handle}`}
-                                onClick={(e) => checkProductExist(product.name) && e.preventDefault()}>
+                            // onClick={(e) => checkProductExist(product.name) && e.preventDefault()}
+                            >
                                 <Button
                                     className="w-[60px] h-[40px] bg-emerald-700 hover:bg-emerald-500 rounded-xl text-white"
-                                    disabled={checkProductExist(product.name)}>
+                                // disabled={checkProductExist(product.name)}
+                                >
                                     {session?.user.subscriptionProducts?.some(item => item.product === product.name) ? 'Do it' : 'Buy'}
                                 </Button>
                             </Link>
