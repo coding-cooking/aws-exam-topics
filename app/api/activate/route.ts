@@ -60,6 +60,7 @@ export async function POST(req: NextRequest) {
             })();
 
             const expirationDate = new Date();
+            
             expirationDate.setFullYear(expirationDate.getFullYear() + 1);
 
             const result = await User.updateOne(
@@ -80,7 +81,7 @@ export async function POST(req: NextRequest) {
             if (result.modifiedCount === 0) {
                 return NextResponse.json({ message: "Failed to update activation status" }, { status: 400 });
             }
-            return NextResponse.json({ message: "Activate product successfully" }, { status: 200 })
+            return NextResponse.json({ message: "Failed to update activation status", data: activationCode.product}, { status: 200 })
         } else {
             return NextResponse.json({ message: "Activate product failed" }, { status: 400 })
         }

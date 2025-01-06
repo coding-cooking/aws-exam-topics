@@ -1,11 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function ActicationForm() {
     const [activationValue, setActivationValue] = useState<string>('');
     const [error, setError] = useState<string>('');
     const [success, setSuccess] = useState(false);
+    const router = useRouter()
 
     async function handleSubmit(event: React.SyntheticEvent) {
         event.preventDefault();
@@ -21,9 +23,28 @@ export default function ActicationForm() {
 
             const data = await response.json();
 
+            console.log('data.data is', data.data);
+
+            let productRoute;
+
+            switch (data.data) {
+                case ('SAA-C03'):
+                    productRoute = 'saa';
+                    break
+                case ('DOP-C02'):
+                    productRoute = 'dop';
+                    break
+                case ('SAP-C02'):
+                    productRoute = 'sap';
+                    break
+            }
+
+            console.log('productRoute is', productRoute);
+
             if (response.ok) {
                 setSuccess(true);
                 setError('');
+                router.push(`/topic/${productRoute}`)
             } else {
                 setError(data.message || 'Activation failed.');
                 setSuccess(false);

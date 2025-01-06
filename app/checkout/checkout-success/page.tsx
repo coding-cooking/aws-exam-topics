@@ -1,7 +1,7 @@
 'use client'
 
 import { checkoutItemType } from "@/app/cart/page"
-import ActivateProduct from "@/components/ActicationForm"
+import ActivateForm from "@/components/ActicationForm"
 import { useSearchParams } from "next/navigation"
 
 export default function CheckoutSuccess() {
@@ -19,7 +19,7 @@ export default function CheckoutSuccess() {
                 <p>You can only get access to the product by submitting the code.</p>
                 <p>After activating the product, you will have the right to use this product for 1 year.</p>
             </div>
-            <ActivateProduct />
+            <ActivateForm />
         </div>
     )
 }
