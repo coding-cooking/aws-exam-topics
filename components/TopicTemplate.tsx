@@ -4,6 +4,7 @@ import TopicsContext, { TopicType } from "@/context/TopicsContext";
 import Image from "next/image";
 import Link from "next/link";
 import { useContext, useState } from "react";
+import { BotMessageSquare } from 'lucide-react';
 
 type TopicTemplateProps = {
     topic: TopicType;
@@ -99,6 +100,10 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
                 <Link href={`/topic/${topic.topicType}/${Number(topic.topicId) + 1}`} className="md:p-3 hover:bg-teal-200 hover:bg-contain">
                     <Image src='/nextIcon.svg' alt='next one' width={60} height={60} />
                 </Link>)}
+
+            <div>
+                <BotMessageSquare className="w-6 h-6" />
+            </div>
 
         </div >
 
