@@ -2,7 +2,6 @@ import { options } from "@/app/api/auth/[...nextauth]/options";
 import TopicTemplate from "@/components/TopicTemplate";
 import { TopicType } from "@/context/TopicsContext";
 import { getServerSession } from "next-auth";
-// import { useSession } from "next-auth/react";
 import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {
@@ -38,18 +37,7 @@ export default async function TopicPage({ params }: { params: Promise<{ handle: 
 
         if (!topic) return notFound();
 
-        // console.log('has right', session?.user.roles.includes(`${handle}Role`))
-
-        return (
-            <TopicTemplate topic={topic} />
-            // {
-            //     session.user.roles.includes(`${handle}Role`) ?
-            //         <TopicTemplate topic={topic} />
-            //         : notFound()
-            // }
-
-
-        );
+        return (<TopicTemplate topic={topic} />);
     } catch (err) {
         console.error("Error fetching topic:", err);
         return notFound();
