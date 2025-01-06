@@ -14,7 +14,7 @@ export async function GET(request: NextRequest, { params }: { params: { handle: 
     try {
         await dbConnect();
 
-        const topic = await Topic.findOne({ topicId: slug }).exec();
+        const topic = await Topic.findOne({ topicType: handle, topicId: slug }).exec();
 
         if (!topic) {
             return NextResponse.json({ message: 'Not found' }, { status: 404 });
