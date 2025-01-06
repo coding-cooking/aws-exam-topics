@@ -1,6 +1,6 @@
 'use client'
 
-import { use } from 'react';
+import * as React from 'react';
 import ProductInfoTemplate from "@/components/ProductInfoTemplate";
 import TopicList from "@/components/TopicList";
 import { products, productType } from "@/data/products";
@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 import { notFound } from "next/navigation";
 
 export default function ProductInfoPage({ params }: { params: Promise<{ handle: string }> }) {
-    const { handle } = use(params);
+    const { handle } = React.use(params);
     const { data: session } = useSession();
 
     try {
