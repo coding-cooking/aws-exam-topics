@@ -44,6 +44,7 @@ function useCartState() {
             console.log("User is not authenticated");
             return;
         }
+
         setAdding(true)
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/cart/add`, {
@@ -54,6 +55,7 @@ function useCartState() {
                 },
                 body: JSON.stringify({ product })
             })
+            console.log('session.user.accessToken', session.user.accessToken)
 
             if (response.ok) {
                 await updateCart();

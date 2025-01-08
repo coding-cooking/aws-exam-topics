@@ -14,6 +14,7 @@ interface CustomProfile extends DefaultProfile {
 interface ExtendedToken extends JWT {
     accessToken?: string;
     id?: string;
+    accessTokenExpires?: number;
 }
 
 export const options: NextAuthOptions = {
@@ -29,6 +30,8 @@ export const options: NextAuthOptions = {
     ],
     session: {
         strategy: "jwt",
+        maxAge: 24 * 60 * 60,
+        updateAge: 5 * 60, 
     },
     callbacks: {
         async jwt({ token, user}: { token: ExtendedToken; user: AuthUser}) {
@@ -40,16 +43,41 @@ export const options: NextAuthOptions = {
                         email: user.email
                     },
                     process.env.NEXTAUTH_SECRET!,
-                    { expiresIn: '1d' } 
+                    { expiresIn: '5 * 60' } 
                 );
                 return {
                     ...token,
                     accessToken,
+                    accessTokenExpires: Date.now() + 1000 * 60 * 5,
                     userId: dbUser._id.toString()
                 };
             }
-            return token;
+            const currentTime = Date.now();
+
+            if (token.accessTokenExpires && currentTime < token.accessTokenExpires) {
+                return token;
+            }
+            try {
+                const refreshedToken = jwt.sign(
+                    {
+                        userId: token.userId,
+                        email: token.email,
+                    },
+                    process.env.NEXTAUTH_SECRET!,
+                    { expiresIn: '60 * 5' }
+                );
+
+                return {
+                    ...token,
+                    accessToken: refreshedToken,
+                    accessTokenExpires: Date.now() + 1000 * 60, 
+                };
+            } catch (error) {
+                console.error('Error refreshing token:', error);
+                return { ...token, error: 'RefreshAccessTokenError' };
+            }
         },
+
         async session({ session, token }: {
             session: Session; token: ExtendedToken
         }) {
