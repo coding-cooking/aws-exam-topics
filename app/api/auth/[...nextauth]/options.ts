@@ -43,7 +43,7 @@ export const options: NextAuthOptions = {
                         email: user.email
                     },
                     process.env.NEXTAUTH_SECRET!,
-                    { expiresIn: '5 * 60' } 
+                    { expiresIn: '5m' } 
                 );
                 return {
                     ...token,
@@ -64,7 +64,7 @@ export const options: NextAuthOptions = {
                         email: token.email,
                     },
                     process.env.NEXTAUTH_SECRET!,
-                    { expiresIn: '60 * 5' }
+                    { expiresIn: '5m' }
                 );
 
                 return {

@@ -9,9 +9,9 @@ type Params = {
     slug: string;
 }
 
-export async function GET(request: NextRequest, context: { params: { handle: string; slug: string } }) {
+export async function GET(request: NextRequest, context: { params: Promise<{ handle: string, slug: string }>}) {
 
-    const { handle, slug } = context.params;
+    const { handle, slug } = await context.params;
 
     if (!context.params || !handle || !slug) {
         return NextResponse.json({ message: 'Handle and slug parameters are required!' }, { status: 404 });
