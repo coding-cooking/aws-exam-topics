@@ -1,7 +1,7 @@
 import { dbConnect } from '@/utils/dbConnect';
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import User, { CartItemType } from '@/model/User';
+import User, { ActivationInfoType, CartItemType } from '@/model/User';
 import { generateActivationCode } from '@/utils/generateActivationCode';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
@@ -45,10 +45,12 @@ export async function POST(req: NextRequest) {
                         }
                     );
                     const lineItems = checkoutSession.line_items?.data || [];
-                    
+
                     await dbConnect();
                     const userId = checkoutSession.metadata?.userId;
                     const user = await User.findById(userId);
+
+                    const activationCodes: ActivationInfoType[] = [];
 
                     if (Array.isArray(user.cart)) {
                         lineItems.forEach(item => {
@@ -65,10 +67,40 @@ export async function POST(req: NextRequest) {
                                 product: item.description,
                                 used: false,
                             });
+
+                            activationCodes.push({
+                                code: activationCode,
+                                product: item.description,
+                                used: false,
+                            });
+
                             //after checkout, delete the items in cart
                             user.cart = user.cart.filter((i: CartItemType) => i.name !== item.description);
                         })
                         await user.save();
+
+                        //send activationcode to user
+                        try {
+                            activationCodes.forEach(async activationCode => {
+                                const emailResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/send-email`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        userEmail: user.email,
+                                        activationCode: activationCode,
+                                    }),
+                                });
+
+                                const emailData = await emailResponse.json();
+                                console.log(`Email sent for product "${activationCode.product}":`, emailData.message);
+
+                            })
+
+                        } catch (emailError) {
+                            console.error('Error sending email:', emailError);
+                        }
                     }
                 }
                 break;

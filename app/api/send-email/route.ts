@@ -4,26 +4,32 @@ import nodemailer from 'nodemailer';
 export async function POST(req: NextRequest) {
     const body = await req.json()
 
-    const { email, activationCode } = body;
+    const { userEmail, activationCode } = body;
 
-    // Create a transporter using your email provider (Gmail example here)
+    console.log('userEmail is', userEmail, 'activationCode is', activationCode.code)
+
     const transporter = nodemailer.createTransport({
         service: 'gmail',
+        // host: "my.smtp.host",
+        // port: 465,
+        // secure: true, 
         auth: {
             user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS,
+            pass: process.env.EMAIL_APP_PASSWORD,
         },
     });
 
     const mailOptions = {
-        from: process.env.EMAIL_USER,  // sender address
-        to: email,
-        subject: 'Your Activation Code',
-        text: `Your activation code is: ${activationCode}`,
+        from: process.env.EMAIL_USER,  
+        to: userEmail,
+        subject: 'The Activation Code of your product',
+        text: `Your activation code for ${activationCode.product} is: ${activationCode.code}. 
+        After activating the product, you will have the right to use this product for 1 year.
+        Please click this link to activate your product: ${ process.env.NEXT_PUBLIC_BASE_URL }/activate
+        `,
     };
 
     try {
-        // Send email
         await transporter.sendMail(mailOptions);
         return NextResponse.json({ message: 'Email sent successfully' }, { status: 401 });
     } catch (error) {

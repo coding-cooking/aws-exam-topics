@@ -18,8 +18,6 @@ export default function CartPage() {
     const { data: session } = useSession();
     const safeCartList = Array.isArray(cartList) ? cartList : [];
 
-    console.log('session?.user.accessToken', session?.user.accessToken)
-
     async function handleCheckout() {
         if (!session) {
             console.log("User is not authenticated");
