@@ -30,17 +30,32 @@ export default function TopicCard() {
                             <p className="text-sm text-slate-500">{product.description}</p>
                         </div>
                         <div>
-                            <Link
-                                href={`/topic/${product.handle}`}
-                            // onClick={(e) => checkProductExist(product.name) && e.preventDefault()}
-                            >
-                                <Button
-                                    className="w-[60px] h-[40px] bg-emerald-700 hover:bg-emerald-500 rounded-xl text-white"
-                                // disabled={checkProductExist(product.name)}
+                            {session?.user.roles.includes(`${product.handle}User`) ?
+                                <Link
+                                    href={`/topic/${product.handle}`}
                                 >
-                                    {session?.user.subscriptionProducts?.some(item => item.product === product.name) ? 'Do it' : 'Buy'}
-                                </Button>
-                            </Link>
+                                    <Button className="w-[80px] h-[40px] bg-emerald-700 hover:bg-emerald-500 rounded-xl text-white">
+                                        Do it
+                                    </Button>
+
+                                </Link>
+                                : session?.user.subscriptionProducts?.some(item => item.product === product.name)
+                                    ? (<Link
+                                        href={`/activate`}
+                                    >
+                                        <Button className="w-[80px] h-[40px] bg-emerald-700 hover:bg-emerald-500 rounded-xl text-white">
+                                            Activate it
+                                        </Button>
+
+                                    </Link>)
+                                    : (<Link
+                                        href={`/topic/${product.handle}`}
+                                    >
+                                        <Button className="w-[80px] h-[40px] bg-emerald-700 hover:bg-emerald-500 rounded-xl text-white">
+                                            Buy
+                                        </Button>
+
+                                    </Link>)}
                         </div>
                     </div>
                 </div>

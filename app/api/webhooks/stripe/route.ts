@@ -1,12 +1,18 @@
 import { dbConnect } from '@/utils/dbConnect';
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import User, { ActivationInfoType, CartItemType } from '@/model/User';
+import User, { CartItemType } from '@/model/User';
 import { generateActivationCode } from '@/utils/generateActivationCode';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
+
+type ActivationCodeType = {
+    code: string;
+    product: string | null;
+    used: boolean;
+}
 
 export async function POST(req: NextRequest) {
     const sig = req.headers.get('stripe-signature');
@@ -50,7 +56,7 @@ export async function POST(req: NextRequest) {
                     const userId = checkoutSession.metadata?.userId;
                     const user = await User.findById(userId);
 
-                    const activationCodes: ActivationInfoType[] = [];
+                    const activationCodes: ActivationCodeType[] = [];
 
                     if (Array.isArray(user.cart)) {
                         lineItems.forEach(item => {
