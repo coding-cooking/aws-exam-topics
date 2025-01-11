@@ -15,6 +15,7 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
     const [submitted, setSubmitted] = useState<boolean>(false);
     const topics: TopicType[] = useContext(TopicsContext);
 
+
     const handleClick = (e: React.FormEvent, option: string) => {
         e.preventDefault();
         if (topic.correctAnswers.length > 1) {
@@ -35,6 +36,33 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
         setSubmitted(true)
     }
 
+    function getOptionClass(key: string) {
+        let baseClass = "block flex gap-2 my-2 p-3 cursor-pointer";
+
+        if (topic.correctAnswers.length === 1) {
+            if (selectedOptions[0] === key) {
+                if (topic.correctAnswers.includes(key)) {
+                    baseClass += " bg-emerald-400 text-slate-950";
+                } else {
+                    baseClass += " bg-red-300 text-slate-950";
+                }
+            } else {
+                baseClass += " hover:bg-sky-400 hover:text-slate-950";
+            }
+        } else if (topic.correctAnswers.length > 1) {
+            if (submitted) {
+                baseClass += topic.correctAnswers.includes(key)
+                    ? " bg-emerald-400 text-slate-950"
+                    : selectedOptions.includes(key)
+                        ? " bg-red-300 text-slate-950"
+                        : ""; // 
+            } else if (selectedOptions.includes(key)) {
+                baseClass += " text-slate-950 bg-sky-400";
+            }
+        }
+        return baseClass;
+    };
+
     return (
         <div className="w-full h-full flex justify-center items-center">
             {Number(topic.topicId) > 1 && (
@@ -52,26 +80,7 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
                         Object.entries(topic.options).map(([key, value]) =>
                             <label
                                 key={`${key}-${value}`}
-                                className={`block flex gap-2 my-2 p-3 cursor-pointer
-                            ${selectedOptions.includes(key) ? 'text-slate-950 bg-sky-400' : 'hover:bg-sky-400 hover:text-slate-950'}
-                            ${topic.correctAnswers.length === 1 &&
-                                        selectedOptions[0] === key &&
-                                        topic.correctAnswers.includes(key)
-                                        ? 'bg-emerald-400 text-slate-950'
-                                        : topic.correctAnswers.length === 1 &&
-                                            selectedOptions.length !== 0 &&
-                                            selectedOptions[0] !== key &&
-                                            topic.correctAnswers.includes(key)
-                                            ? 'bg-emerald-400 text-slate-950'
-                                            : topic.correctAnswers.length === 1 &&
-                                                selectedOptions[0] == key &&
-                                                !topic.correctAnswers.includes(key)
-                                                ? 'bg-red-300 text-slate-950'
-                                                : ''
-                                    }
-                            ${topic.correctAnswers.length > 1 && submitted && topic.correctAnswers.includes(key) ? 'bg-emerald-400 text-slate-950' : topic.correctAnswers.length > 1 && submitted && !topic.correctAnswers.includes(key) && selectedOptions.includes(key) ? 'bg-red-300 text-slate-950' : ''}
-
-                            `}
+                                className={getOptionClass(key)}
                                 onClick={(e) => { handleClick(e, key) }}
                             >
                                 <input type={topic.correctAnswers.length > 1 ? 'checkbox' : 'radio'}
