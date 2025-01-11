@@ -1,5 +1,18 @@
 import { Schema, model, models } from "mongoose";
 
+const UserProgressSchema = new Schema({
+    topicId: { type: String, required: true },
+    selectedOption: { type: String, required: true },
+    isCorrect: { type: Boolean, required: true },
+    attemptedAt: { type: Date, default: Date.now }
+});
+
+const ProductProgressSchema = new Schema({
+    product: { type: String, required: true }, // 'saa', 'dop', or 'sap'
+    completedTopics: [UserProgressSchema],
+    lastAccessedAt: { type: Date, default: Date.now }
+});
+
 const UserSchema = new Schema({
     email: {
         type: String,
@@ -44,8 +57,11 @@ const UserSchema = new Schema({
         price: { type: String },
         priceId: { type: String },
         quantity: { type: Number, default: 1 },
-    }]
+    }],
+    productProgress: [ProductProgressSchema],
 });
+
+
 export type SubscriptionProducttype = {
     product: string;
     activationDate: Date;
@@ -67,6 +83,19 @@ export type CartItemType = {
     quantity: number;
 }
 
+export type UserProgressType = {
+    topicId: string;
+    selectedOption: string;
+    isCorrect: boolean;
+    attemptedAt: Date;
+}
+
+export type ProductProgress = {
+    product: string;
+    completedTopics: UserProgressType[];
+    lastAccessedAt: Date;
+}
+
 export type UserType = {
     _id: string;
     username: string;
@@ -78,6 +107,7 @@ export type UserType = {
     subscriptionProducts?: SubscriptionProducttype[];
     activationInfos?: ActivationInfoType[];
     cart: CartItemType[];
+    productProgress: ProductProgress[];
 }
 
 const User = models.User || model("User", UserSchema);
