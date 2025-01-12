@@ -2,13 +2,13 @@ import { Schema, model, models } from "mongoose";
 
 const UserProgressSchema = new Schema({
     topicId: { type: String, required: true },
-    selectedOption: { type: String, required: true },
+    selectedOptions: { type: [String], required: true },
     isCorrect: { type: Boolean, required: true },
     attemptedAt: { type: Date, default: Date.now }
 });
 
 const ProductProgressSchema = new Schema({
-    product: { type: String, required: true }, // 'saa', 'dop', or 'sap'
+    product: { type: String, required: true }, 
     completedTopics: [UserProgressSchema],
     lastAccessedAt: { type: Date, default: Date.now }
 });
@@ -85,12 +85,12 @@ export type CartItemType = {
 
 export type UserProgressType = {
     topicId: string;
-    selectedOption: string;
+    selectedOptions: string[];
     isCorrect: boolean;
     attemptedAt: Date;
 }
 
-export type ProductProgress = {
+export type ProductProgressType = {
     product: string;
     completedTopics: UserProgressType[];
     lastAccessedAt: Date;
@@ -107,7 +107,7 @@ export type UserType = {
     subscriptionProducts?: SubscriptionProducttype[];
     activationInfos?: ActivationInfoType[];
     cart: CartItemType[];
-    productProgress: ProductProgress[];
+    productProgress: ProductProgressType[];
 }
 
 const User = models.User || model("User", UserSchema);

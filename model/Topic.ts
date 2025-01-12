@@ -24,7 +24,7 @@ const OptionSchema = new Schema({
 
 const TopicSchema = new Schema({
 	topicType: {
-		type: [String],
+		type: String,
 		required: true,
 		enum: ['saa', 'dop', 'sap'],
 	},

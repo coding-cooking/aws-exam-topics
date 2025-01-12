@@ -30,7 +30,7 @@ export default function TopicCard() {
                             <p className="text-sm text-slate-500">{product.description}</p>
                         </div>
                         <div>
-                            {session?.user.roles.includes(`${product.handle}User`) ?
+                            {Array.isArray(session?.user.roles) && session?.user.roles.includes(`${product.handle}User`) ?
                                 <Link
                                     href={`/topic/${product.handle}`}
                                 >

@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { options } from "../auth/[...nextauth]/options";
 import { isValidObjectId } from "mongoose";
-import User, { ActivationInfoType } from "@/model/User";
+import User, { ActivationInfoType, ProductProgressType } from "@/model/User";
 
 export async function POST(req: NextRequest) {
     try {
@@ -63,18 +63,58 @@ export async function POST(req: NextRequest) {
             
             expirationDate.setFullYear(expirationDate.getFullYear() + 1);
 
+            const productProgressExists = user.productProgress.some(
+                (progress: ProductProgressType) => progress.product === activationCode.product
+            );
+
+            const updateData: any = {
+                $set: {
+                    'activationInfos.$.used': true,
+                    ...(productProgressExists
+                        ? { 'productProgress.$[product].lastAccessedAt': new Date() }
+                        : {}),
+                },
+                ...(productProgressExists
+                    ? {}
+                    : {
+                        $push: {
+                            productProgress: {
+                                product: activationCode.product,
+                                completedTopics: [],
+                                lastAccessedAt: new Date(),
+                            },
+                        },
+                    }),
+            };
+
+            if (newRole) {
+                updateData.$push = updateData.$push || {};
+                updateData.$push.roles = newRole;
+            }
+
+            // const result = await User.updateOne(
+            //     {
+            //         _id: userId,
+            //         'activationInfos.code': activationValue.toString()
+            //     },
+            //     {
+            //         $set: {
+            //             'activationInfos.$.used': true,
+            //             'subscriptionProducts.$.activationDate': new Date(),
+            //             'subscriptionProducts.$.expirationDate': expirationDate
+            //         },
+            //         $push: { roles: newRole }
+            //     }
+            // );
+
             const result = await User.updateOne(
                 {
                     _id: userId,
-                    'activationInfos.code': activationValue.toString()
+                    'activationInfos.code': activationValue.toString(),
                 },
+                updateData,
                 {
-                    $set: {
-                        'activationInfos.$.used': true,
-                        'subscriptionProducts.$.activationDate': new Date(),
-                        'subscriptionProducts.$.expirationDate': expirationDate
-                    },
-                    $push: { roles: newRole }
+                    arrayFilters: [{ 'product.product': activationCode.product }],
                 }
             );
 

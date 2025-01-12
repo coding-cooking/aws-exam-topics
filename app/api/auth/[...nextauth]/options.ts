@@ -142,6 +142,7 @@ export const options: NextAuthOptions = {
                             subscriptionTypes: [],
                             activationInfos: [],
                             cart: [],
+                            productProgress:[],
                         });
                     }
                     return true;

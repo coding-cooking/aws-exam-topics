@@ -5,46 +5,98 @@ import Image from "next/image";
 import Link from "next/link";
 import { useContext, useState } from "react";
 import { BotMessageSquare } from 'lucide-react';
+import { useSession } from "next-auth/react";
 
 type TopicTemplateProps = {
     topic: TopicType;
 }
 
 export default function TopicTemplate({ topic }: TopicTemplateProps) {
+    const { data: session } = useSession();
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const [submitted, setSubmitted] = useState<boolean>(false);
     const topics: TopicType[] = useContext(TopicsContext);
 
-
     const handleClick = (e: React.FormEvent, option: string) => {
         e.preventDefault();
+
+        let updatedOptions: string[];
+
         if (topic.correctAnswers.length > 1) {
-            setSelectedOptions((prevOptions) => {
-                if (prevOptions.includes(option)) {
-                    return prevOptions.filter((opt) => opt !== option);
-                } else {
-                    return [...prevOptions, option];
-                }
-            })
+            updatedOptions = selectedOptions.includes(option) ?
+                selectedOptions.filter((opt) => opt !== option) :
+                [...selectedOptions, option];
         } else {
-            setSelectedOptions([option])
+            updatedOptions = [option];
+        }
+
+        setSelectedOptions(updatedOptions);
+
+        if (topic.correctAnswers.length === 1) {
+            saveSelection(updatedOptions);
         }
     }
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        setSubmitted(true)
+        setSubmitted(true);
+        saveSelection(selectedOptions);
+    }
+
+    async function saveSelection(options: string[]) {
+        if (!session) {
+            console.log("User is not authenticated");
+            return;
+        }
+
+        let productType;
+
+        switch (topic.topicType) {
+            case "saa":
+                productType = "SAA-C03";
+                break;
+            case "dop":
+                productType = "DOP-C02";
+                break;
+            case "sap":
+                productType = "SAP-C02";
+                break;
+            default:
+                productType = null;
+        }
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/saveProgress`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.user.accessToken}`,
+            },
+            body: JSON.stringify({
+                userId: session.user.id,
+                topicId: topic.topicId,
+                product: productType,
+                selectedOptions: options,
+                isCorrect: JSON.stringify(options) === JSON.stringify(topic.correctAnswers),
+            })
+        });
+        if (response.ok) {
+            return ("Save selection data successfully!")
+        } else {
+            console.error('Failed to save selection:', await response.text());
+        }
     }
 
     function getOptionClass(key: string) {
         let baseClass = "block flex gap-2 my-2 p-3 cursor-pointer";
 
         if (topic.correctAnswers.length === 1) {
-            if (selectedOptions[0] === key) {
+            if (selectedOptions.length !== 0) {
                 if (topic.correctAnswers.includes(key)) {
                     baseClass += " bg-emerald-400 text-slate-950";
-                } else {
+                } else if (selectedOptions.includes(key)) {
                     baseClass += " bg-red-300 text-slate-950";
+                } else {
+                    ""
                 }
             } else {
                 baseClass += " hover:bg-sky-400 hover:text-slate-950";
