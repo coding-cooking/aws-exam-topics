@@ -48,15 +48,17 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        let topicExists = currentProductProgress.completedTopics.find((topic: UserProgressType) => topic.topicId === topicId)
+        const topicIndex = currentProductProgress.completedTopics.findIndex(
+            (topic: UserProgressType) => topic.topicId === topicId
+        );
 
-        if (topicExists) {
-            topicExists = {
+        if (topicIndex > -1) {
+            currentProductProgress.completedTopics[topicIndex] = {
                 topicId,
                 selectedOptions,
                 isCorrect,
                 attemptedAt: new Date(),
-            }
+            };
         } else {
             currentProductProgress.completedTopics.push({
                 topicId,
