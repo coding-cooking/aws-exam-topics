@@ -1,12 +1,8 @@
 'use client'
 
 import { Button } from "@/components/ui/button"
-// import { useSearchParams } from "next/navigation"
 
 export default function CheckoutCancel() {
-    // const searchParams = useSearchParams()
-    // const itemsParam = searchParams.get('items')
-    // const items = itemsParam ? JSON.parse(itemsParam) : []
 
     return (
         <div className="w-full h-full flex flex-col justify-center items-center">
