@@ -4,11 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = 'force-static';
 
-type Params = {
-    handle: string;
-    slug: string;
-}
-
 export async function GET(request: NextRequest, context: { params: Promise<{ handle: string, slug: string }>}) {
 
     const { handle, slug } = await context.params;

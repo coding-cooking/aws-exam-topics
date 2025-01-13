@@ -5,6 +5,21 @@ import { options } from "../auth/[...nextauth]/options";
 import { isValidObjectId } from "mongoose";
 import User, { ActivationInfoType, ProductProgressType } from "@/model/User";
 
+type UpdateDataType = {
+    $set: {
+        'activationInfos.$.used': boolean;
+        'productProgress.$[product].lastAccessedAt'?: Date;
+    },
+    $push?: {
+        productProgress?: {
+            product: string,
+            completedTopics: [],
+            lastAccessedAt: Date,
+        },
+        roles?: string;
+    }                   
+    }
+
 export async function POST(req: NextRequest) {
     try {
         await dbConnect();
@@ -40,7 +55,7 @@ export async function POST(req: NextRequest) {
             const newRole = (() => {
                 switch (activationCode.product) {
                     case "SAA-C03":
-                        if (!user.roles.includes('saaUser')){
+                        if (!user.roles.includes('saaUser')) {
                             return 'saaUser';
                         }
                         break
@@ -60,14 +75,14 @@ export async function POST(req: NextRequest) {
             })();
 
             const expirationDate = new Date();
-            
+
             expirationDate.setFullYear(expirationDate.getFullYear() + 1);
 
             const productProgressExists = user.productProgress.some(
                 (progress: ProductProgressType) => progress.product === activationCode.product
             );
 
-            const updateData: any = {
+            const updateData: UpdateDataType = {
                 $set: {
                     'activationInfos.$.used': true,
                     ...(productProgressExists
@@ -92,21 +107,6 @@ export async function POST(req: NextRequest) {
                 updateData.$push.roles = newRole;
             }
 
-            // const result = await User.updateOne(
-            //     {
-            //         _id: userId,
-            //         'activationInfos.code': activationValue.toString()
-            //     },
-            //     {
-            //         $set: {
-            //             'activationInfos.$.used': true,
-            //             'subscriptionProducts.$.activationDate': new Date(),
-            //             'subscriptionProducts.$.expirationDate': expirationDate
-            //         },
-            //         $push: { roles: newRole }
-            //     }
-            // );
-
             const result = await User.updateOne(
                 {
                     _id: userId,
@@ -121,7 +121,7 @@ export async function POST(req: NextRequest) {
             if (result.modifiedCount === 0) {
                 return NextResponse.json({ message: "Failed to update activation status" }, { status: 400 });
             }
-            return NextResponse.json({ message: "Failed to update activation status", data: activationCode.product}, { status: 200 })
+            return NextResponse.json({ message: "Failed to update activation status", data: activationCode.product }, { status: 200 })
         } else {
             return NextResponse.json({ message: "Activate product failed" }, { status: 400 })
         }

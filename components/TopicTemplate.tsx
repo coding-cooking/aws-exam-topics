@@ -15,7 +15,7 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
     const { data: session } = useSession();
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const [submitted, setSubmitted] = useState<boolean>(false);
-    const [topicCompleted, setTopicCompleted] = useState<boolean>(false);
+    // const [topicCompleted, setTopicCompleted] = useState<boolean>(false);
     const topics: TopicType[] = useContext(TopicsContext);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -35,7 +35,7 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
                 const data = await res.json();
                 console.log('data', data)
                 if (res.ok) {
-                    setTopicCompleted(data.completed);
+                    // setTopicCompleted(data.completed);
                     if (data.selectedOptions && data.selectedOptions.length > 0) {
                         setSelectedOptions(data.selectedOptions);
                         setSubmitted(true);
@@ -132,8 +132,6 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
                     baseClass += " bg-emerald-400 text-slate-950";
                 } else if (selectedOptions.includes(key)) {
                     baseClass += " bg-red-300 text-slate-950";
-                } else {
-                    ""
                 }
             } else {
                 baseClass += " hover:bg-sky-400 hover:text-slate-950";
