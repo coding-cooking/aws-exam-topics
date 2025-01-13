@@ -25,7 +25,7 @@ function useCartState() {
     async function updateCart() {
         setIsLoading(true);
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/cart`, {
+            const response = await fetch(`/api/cart`, {
                 method: 'GET',
             })
             const updatedCart = await response.json();
@@ -47,7 +47,7 @@ function useCartState() {
 
         setAdding(true)
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/cart/add`, {
+            const response = await fetch(`/api/cart/add`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ function useCartState() {
             return;
         }
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/cart/edit`, {
+            const response = await fetch(`/api/cart/edit`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

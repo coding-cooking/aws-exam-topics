@@ -102,7 +102,7 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
                 productType = null;
         }
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/saveUserProgress`, {
+        const response = await fetch(`/api/saveUserProgress`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
