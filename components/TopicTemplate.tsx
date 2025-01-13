@@ -152,6 +152,10 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
         return baseClass;
     };
 
+    if (isLoading) {
+        return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    }
+
     return (
         <div className="w-full h-full flex justify-center items-center">
             {Number(topic.topicId) > 1 && (
