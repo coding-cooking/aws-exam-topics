@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
                         //send activationcode to user
                         try {
                             activationCodes.forEach(async activationCode => {
-                                const emailResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/send-email`, {
+                                const emailResponse = await fetch(`${process.env.BASE_URL}/api/send-email`, {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json',

@@ -84,7 +84,7 @@ export default function CartDrawer({ drawerOpen, setDrawerOpen, showIcon }: Cart
                                     : (<p>$ 0.00</p>)}
                         </div>
                         <div className='flex justify-center'>
-                            <Link href={`${process.env.NEXT_PUBLIC_BASE_URL}/cart`} className='w-3/4' >
+                            <Link href={`/cart`} className='w-3/4' >
                                 <button
                                     className='w-full h-[40px] bg-emerald-700 text-white rounded-lg'
                                     onClick={() => setDrawerOpen(false)}>

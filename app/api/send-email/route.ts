@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
         subject: 'The Activation Code of your product',
         text: `Your activation code for ${activationCode.product} is: ${activationCode.code}. 
         After activating the product, you will have the right to use this product for 1 year.
-        Please click this link to activate your product: ${ process.env.NEXT_PUBLIC_BASE_URL }/activate
+        Please click this link to activate your product: ${ process.env.BASE_URL }/activate
         `,
     };
 
