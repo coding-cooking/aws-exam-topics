@@ -3,7 +3,7 @@
 import TopicsContext, { TopicType } from "@/context/TopicsContext";
 import Image from "next/image";
 import Link from "next/link";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BotMessageSquare } from 'lucide-react';
 import { useSession } from "next-auth/react";
 
@@ -15,7 +15,44 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
     const { data: session } = useSession();
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const [submitted, setSubmitted] = useState<boolean>(false);
+    const [topicCompleted, setTopicCompleted] = useState<boolean>(false);
     const topics: TopicType[] = useContext(TopicsContext);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (!session) return;
+
+        const fetchUserProgress = async () => {
+            setIsLoading(true);
+            try {
+                const res = await fetch(`/api/getUserProgress?userId=${session.user.id}&topicId=${topic.topicId}&productType=${topic.topicType}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.user.accessToken}`,
+                    }
+                });
+                const data = await res.json();
+                console.log('data', data)
+                if (res.ok) {
+                    setTopicCompleted(data.completed);
+                    if (data.selectedOptions && data.selectedOptions.length > 0) {
+                        setSelectedOptions(data.selectedOptions);
+                        setSubmitted(true);
+                    }
+                } else {
+                    console.error('Error fetching user progress:', data.message);
+                }
+            } catch (error) {
+                console.error('Failed to fetch user progress:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+        fetchUserProgress();
+
+    }, [session, topic])
 
     const handleClick = (e: React.FormEvent, option: string) => {
         e.preventDefault();
@@ -65,7 +102,7 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
                 productType = null;
         }
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/saveProgress`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/saveUserProgress`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -161,12 +198,9 @@ export default function TopicTemplate({ topic }: TopicTemplateProps) {
                 <Link href={`/topic/${topic.topicType}/${Number(topic.topicId) + 1}`} className="md:p-3 hover:bg-teal-200 hover:bg-contain">
                     <Image src='/nextIcon.svg' alt='next one' width={60} height={60} />
                 </Link>)}
-
             <div>
                 <BotMessageSquare className="w-6 h-6" />
             </div>
-
         </div >
-
     )
 }
