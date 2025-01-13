@@ -12,7 +12,7 @@ type TopicListProps = {
 
 export default function TopicList({ product, handle }: TopicListProps) {
     const topics: TopicType[] = useContext(TopicsContext);
-    const topicsWithHandle = topics.filter(topic => topic.topicType === handle)
+    const topicsWithHandle = topics.sort((a, b) => Number(a.topicId) - Number(b.topicId)).filter(topic => topic.topicType === handle)
 
     return (
         <div className="w-4/5 h-full mx-auto flex flex-col justify-center items-center ">
