@@ -5,7 +5,7 @@ import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {
-    const topics: TopicType[] = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/topic`)
+    const topics: TopicType[] = await fetch(`/api/topic`)
         .then((res) => res.json());
 
     if (!topics || topics.length === 0) {
