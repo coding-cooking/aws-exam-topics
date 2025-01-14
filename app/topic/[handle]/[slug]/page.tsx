@@ -7,7 +7,6 @@ import { notFound } from "next/navigation";
 export async function generateStaticParams() {
     const topics: TopicType[] = await fetch(`${process.env.BASE_URL}/api/topic`)
         .then((res) => res.json());
-
     if (!topics || topics.length === 0) {
         return [];
     } else {
