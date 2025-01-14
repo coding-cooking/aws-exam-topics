@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button"
 
 export default function CheckoutCancel() {
-
     return (
         <div className="w-full h-full flex flex-col justify-center items-center">
             <h1 className="mt-32 text-2xl text-teal-800 font-extrabold">You canceled the payment.</h1>
