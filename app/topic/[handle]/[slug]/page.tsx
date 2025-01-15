@@ -31,13 +31,31 @@ export default async function TopicPage({ params }: { params: Promise<{ handle: 
         console.log('PARAMS_RECEIVED:', { handle, slug, time: performance.now() - startTime });
 
         console.log('🔐 Starting session check');
-        const session = await getServerSession(options);
-        console.log('Session:', session);
+        // const session = await getServerSession(options);
+        // console.log('Session:', session);
 
-        if (!session?.user?.roles?.includes(`${handle}User`)) {
-            console.log('❌ Role check failed');
+        const sessionPromise = getServerSession(options);
+        const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Session timeout')), 5000)
+        );
+
+        const session = await Promise.race([sessionPromise, timeoutPromise])
+            .catch(err => {
+                console.error('Session error:', err);
+                return null;
+            });
+
+        console.log('Session result:', !!session);
+
+        if (!session) {
+            console.log('No session found');
             return notFound();
         }
+
+        // if (!session?.user?.roles?.includes(`${handle}User`)) {
+        //     console.log('❌ Role check failed');
+        //     return notFound();
+        // }
 
         console.log('fetch TopicPage', `${process.env.BASE_URL}/api/topic/${handle}/${slug}`)
         const response = await fetch(`${process.env.BASE_URL}/api/topic/${handle}/${slug}`, { signal: AbortSignal.timeout(5000) });
