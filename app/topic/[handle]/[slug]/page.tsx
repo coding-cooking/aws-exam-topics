@@ -57,5 +57,3 @@ export default async function TopicPage({ params }: { params: Promise<{ handle: 
     }
 }
 
-export const runtime = 'edge';
-
