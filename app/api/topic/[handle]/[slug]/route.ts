@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const dynamic = 'force-static';
 
 export async function GET(request: NextRequest, context: { params: Promise<{ handle: string, slug: string }>}) {
-
+    console.log('🎯 API route hit');
     const { handle, slug } = await context.params;
 
     if (!context.params || !handle || !slug) {

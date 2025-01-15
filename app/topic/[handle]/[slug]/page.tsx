@@ -23,18 +23,25 @@ export async function generateStaticParams() {
 }
 
 export default async function TopicPage({ params }: { params: Promise<{ handle: string, slug: string }> }) {
-    const { handle, slug } = await params;
-    const session = await getServerSession(options);
-    console.log('Params received:', { handle, slug });
-    console.log('Session:', session);
-
-    if (!session?.user?.roles?.includes(`${handle}User`)) {
-        return notFound();
-    }
-
+    console.log('INITIAL_LOG: Page component starting');
+    const startTime = performance.now();
     try {
-        const response = await fetch(`${process.env.BASE_URL}/api/topic/${handle}/${slug}`);
+
+        const { handle, slug } = await params;
+        console.log('PARAMS_RECEIVED:', { handle, slug, time: performance.now() - startTime });
+
+        console.log('🔐 Starting session check');
+        const session = await getServerSession(options);
+        console.log('Session:', session);
+
+        if (!session?.user?.roles?.includes(`${handle}User`)) {
+            console.log('❌ Role check failed');
+            return notFound();
+        }
+
         console.log('fetch TopicPage', `${process.env.BASE_URL}/api/topic/${handle}/${slug}`)
+        const response = await fetch(`${process.env.BASE_URL}/api/topic/${handle}/${slug}`, { signal: AbortSignal.timeout(5000) });
+        console.log('📡 Response received:', response.status);
         if (!response.ok) {
             return notFound();
         }
@@ -49,4 +56,6 @@ export default async function TopicPage({ params }: { params: Promise<{ handle: 
         return notFound();
     }
 }
+
+export const runtime = 'edge';
 
