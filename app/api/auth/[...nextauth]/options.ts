@@ -22,6 +22,13 @@ export const options: NextAuthOptions = {
         GoogleProvider({
             clientId: process.env.GOOGLE_ID as string,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+            authorization: {
+                params: {
+                    prompt: "consent",
+                    access_type: "offline",
+                    response_type: "code"
+                }
+            }
         }),
         FacebookProvider({
             clientId: process.env.FACEBOOK_CLIENT_ID as string,
@@ -31,37 +38,18 @@ export const options: NextAuthOptions = {
     session: {
         strategy: "jwt",
         maxAge: 24 * 60 * 60,
-        updateAge: 5 * 60, 
+        updateAge: 5 * 60,
     },
     callbacks: {
-        async jwt({ token, user}: { token: ExtendedToken; user: AuthUser}) {
+        async jwt({ token, user }: { token: ExtendedToken; user: AuthUser }) {
             if (user) {
                 const dbUser = await User.findOne({ email: token.email });
+                if (!dbUser) throw new Error("User not found in database");
+
                 const accessToken = jwt.sign(
                     {
                         userId: dbUser._id.toString(),
                         email: user.email
-                    },
-                    process.env.NEXTAUTH_SECRET!,
-                    { expiresIn: '5m' } 
-                );
-                return {
-                    ...token,
-                    accessToken,
-                    accessTokenExpires: Date.now() + 1000 * 60 * 5,
-                    userId: dbUser._id.toString()
-                };
-            }
-            const currentTime = Date.now();
-
-            if (token.accessTokenExpires && currentTime < token.accessTokenExpires) {
-                return token;
-            }
-            try {
-                const refreshedToken = jwt.sign(
-                    {
-                        userId: token.userId,
-                        email: token.email,
                     },
                     process.env.NEXTAUTH_SECRET!,
                     { expiresIn: '5m' }
@@ -69,35 +57,57 @@ export const options: NextAuthOptions = {
 
                 return {
                     ...token,
-                    accessToken: refreshedToken,
-                    accessTokenExpires: Date.now() + 1000 * 60, 
+                    accessToken,
+                    accessTokenExpires: new Date(Date.now() + 1000 * 60 * 5),
+                    userId: dbUser._id.toString()
                 };
-            } catch (error) {
-                console.error('Error refreshing token:', error);
-                return { ...token, error: 'RefreshAccessTokenError' };
             }
+            
+            if (Date.now() < (token.accessTokenExpires || 0)) {
+                return token;
+            }
+
+            const refreshedToken = jwt.sign(
+                {
+                    userId: token.userId,
+                    email: token.email,
+                },
+                process.env.NEXTAUTH_SECRET!,
+                { expiresIn: '5m' }
+            );
+
+            return {
+                ...token,
+                accessToken: refreshedToken,
+                accessTokenExpires: Date.now() + 1000 * 60 * 5,
+            };
         },
 
         async session({ session, token }: {
             session: Session; token: ExtendedToken
         }) {
-            if (session.user) {
-                const sessionUser: UserType | null = await User.findOne({ email: session.user.email });
-                if (sessionUser && token) {
-                    session.user.id = sessionUser._id.toString();
-                    session.user.username = sessionUser.username;
-                    session.user.accessToken = token.accessToken;
-                    session.user.roles = sessionUser.roles;
-                    session.user.subscriptionProducts = sessionUser.subscriptionProducts;
-                    session.user.activationInfos = sessionUser.activationInfos;
-                    session.user.cart = sessionUser.cart;
+            try {
+                if (session.user) {
+                    const sessionUser: UserType | null = await User.findOne({ email: session.user.email });
+                    if (sessionUser && token) {
+                        session.user.id = sessionUser._id.toString();
+                        session.user.username = sessionUser.username;
+                        session.user.accessToken = token.accessToken;
+                        session.user.roles = sessionUser.roles;
+                        session.user.subscriptionProducts = sessionUser.subscriptionProducts;
+                        session.user.activationInfos = sessionUser.activationInfos;
+                        session.user.cart = sessionUser.cart;
+                    } else {
+                        console.error('User not found in the database');
+                    }
                 } else {
-                    console.error('User not found in the database');
+                    console.error('session.user is undefined');
                 }
-            } else {
-                console.error('session.user is undefined');
+                return session;
+            } catch (error) {
+                console.error('Session callback error:', error);
+                throw error;
             }
-            return session;
         },
         async signIn({
             account,
@@ -142,7 +152,7 @@ export const options: NextAuthOptions = {
                             subscriptionTypes: [],
                             activationInfos: [],
                             cart: [],
-                            productProgress:[],
+                            productProgress: [],
                         });
                     }
                     return true;

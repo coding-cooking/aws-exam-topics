@@ -2,19 +2,14 @@ import { options } from "@/app/api/auth/[...nextauth]/options";
 import TopicTemplate from "@/components/TopicTemplate";
 import { TopicType } from "@/context/TopicsContext";
 import { getServerSession } from "next-auth";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 export async function generateStaticParams() {
     const topics: TopicType[] = await fetch(`${process.env.BASE_URL}/api/topic`)
         .then((res) => res.json());
-    console.log('fetch generateStaticParams from ', `${process.env.BASE_URL}/api/topic`)
     if (!topics || topics.length === 0) {
         return [];
     } else {
-        console.log('Generated params:', topics.map(t => ({
-            handle: t.topicType,
-            slug: t.topicId,
-        })));
         return topics.map((topic) => ({
             handle: topic.topicType,
             slug: topic.topicId,
@@ -23,45 +18,28 @@ export async function generateStaticParams() {
 }
 
 export default async function TopicPage({ params }: { params: Promise<{ handle: string, slug: string }> }) {
-    console.log('INITIAL_LOG: Page component starting');
-    const startTime = performance.now();
     try {
 
         const { handle, slug } = await params;
-        console.log('PARAMS_RECEIVED:', { handle, slug, time: performance.now() - startTime });
+        const session = await getServerSession(options);
+        console.log('session is null or not', session)
+        if (!session || !session.user) {
+            console.log('No valid session found');
+            redirect('/api/auth/signin');
+            return null;
+        }
 
-        console.log('🔐 Starting session check');
-        // const session = await getServerSession(options);
-        // console.log('Session:', session);
-
-        const sessionPromise = getServerSession(options);
-        const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Session timeout')), 5000)
-        );
-
-        const session = await Promise.race([sessionPromise, timeoutPromise])
-            .catch(err => {
-                console.error('Session error:', err);
-                return null;
-            });
-
-        console.log('Session result:', !!session);
-
-        if (!session) {
-            console.log('No session found');
+        if (!session?.user?.roles?.includes(`${handle}User`)) {
             return notFound();
         }
 
-        // if (!session?.user?.roles?.includes(`${handle}User`)) {
-        //     console.log('❌ Role check failed');
-        //     return notFound();
-        // }
+        const response = await fetch(`${process.env.BASE_URL}/api/topic/${handle}/${slug}`, {
+            next: { revalidate: 60 },
+            cache: 'force-cache'
+        });
 
-        console.log('fetch TopicPage', `${process.env.BASE_URL}/api/topic/${handle}/${slug}`)
-        const response = await fetch(`${process.env.BASE_URL}/api/topic/${handle}/${slug}`, { signal: AbortSignal.timeout(5000) });
-        console.log('📡 Response received:', response.status);
         if (!response.ok) {
-            return notFound();
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const topic: TopicType = await response.json();
