@@ -5,6 +5,14 @@ import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from 'next/headers';
 
+export type ProgressCookieItemType = {
+    topicId: string;
+    product: string;
+    selectedOptions: Array<string>;
+    isCorrect: boolean;
+    attemptedAt: Date;
+}
+
 export async function POST(req: NextRequest) {
     try {
         await dbConnect();
@@ -72,15 +80,39 @@ export async function POST(req: NextRequest) {
 
         // Save the data into cookies
         const userCookies = await cookies();
-        const cookieData = JSON.stringify({
+        const existingCookie = userCookies.get('user-progress');
+
+        let cookieDataArray = [];
+
+        if (existingCookie) {
+            try {
+                cookieDataArray = JSON.parse(existingCookie.value) || [];
+            } catch (err) {
+                console.error('Failed to parse existing cookie data:', err);
+            }
+        }
+
+        const newCookieData = {
             topicId,
             product,
             selectedOptions,
             isCorrect,
             attemptedAt: new Date(),
-        });
+        };
 
-       userCookies.set('user-progress', cookieData, {
+        const existingTopicIndex = cookieDataArray.findIndex(
+            (data: ProgressCookieItemType) => data.topicId === topicId && data.product === product
+        );
+
+        if (existingTopicIndex > -1) {
+            // Update the existing topic data
+            cookieDataArray[existingTopicIndex] = newCookieData;
+        } else {
+            // Add the new topic data
+            cookieDataArray.push(newCookieData);
+        }
+
+        userCookies.set('user-progress', JSON.stringify(cookieDataArray), {
             httpOnly: true,
             secure: true,
             path: '/',

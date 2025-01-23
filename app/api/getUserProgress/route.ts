@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { dbConnect } from "@/utils/dbConnect";
 import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
+import { ProgressCookieItemType } from "../saveUserProgress/route";
 
 
 export async function GET(req: NextRequest) {
@@ -30,13 +31,15 @@ export async function GET(req: NextRequest) {
                 const cookieData = JSON.parse(progressCookie.value);
 
                 // Check if the data in the cookie matches the requested topic and product type
-                if (
-                    cookieData.topicId === topicId &&
-                    cookieData.product.toLowerCase().startsWith(productType)
+                const topicCookieExists = cookieData.findIndex((item: ProgressCookieItemType) => item.topicId === topicId && item.product.toLowerCase().startsWith(productType))
+
+                if (topicCookieExists > -1
+                    // cookieData.topicId === topicId &&
+                    // cookieData.product.toLowerCase().startsWith(productType)
                 ) {
                     return NextResponse.json({
                         completed: true,
-                        selectedOptions: cookieData.selectedOptions || []
+                        selectedOptions: cookieData[topicCookieExists].selectedOptions || []
                     }, { status: 200 });
                 }
             } catch (err) {
