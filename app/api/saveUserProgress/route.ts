@@ -3,6 +3,7 @@ import { dbConnect } from "@/utils/dbConnect";
 import { verifyToken } from "@/utils/verifyToken";
 import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from 'next/headers';
 
 export async function POST(req: NextRequest) {
     try {
@@ -68,6 +69,23 @@ export async function POST(req: NextRequest) {
             })
         }
         await user.save();
+
+        // Save the data into cookies
+        const userCookies = await cookies();
+        const cookieData = JSON.stringify({
+            topicId,
+            product,
+            selectedOptions,
+            isCorrect,
+            attemptedAt: new Date(),
+        });
+
+       userCookies.set('user-progress', cookieData, {
+            httpOnly: true,
+            secure: true,
+            path: '/',
+            maxAge: 60 * 60 * 24 * 7, // 7 days
+        });
 
         return NextResponse.json({ message: "Save selection to database successfully" }, { status: 200 });
 

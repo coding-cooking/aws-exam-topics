@@ -1,7 +1,9 @@
 import User, { ProductProgressType, UserProgressType } from "@/model/User";
+import { cookies } from "next/headers";
 import { dbConnect } from "@/utils/dbConnect";
 import { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
+
 
 export async function GET(req: NextRequest) {
     try {
@@ -12,8 +14,6 @@ export async function GET(req: NextRequest) {
         const topicId = url.searchParams.get('topicId');
         const productType = url.searchParams.get('productType');
 
-        console.log('req are are are', userId, topicId, productType)
-
         if (!userId || !topicId || !productType) {
             return NextResponse.json({ message: "Missing required parameters" }, { status: 400 })
         }
@@ -22,6 +22,29 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ message: "Invalid user ID" }, { status: 400 });
         }
 
+        const progressCookie = (await cookies()).get('user-progress');
+
+        if (progressCookie) {
+            console.log('progressCookie', progressCookie)
+            try {
+                const cookieData = JSON.parse(progressCookie.value);
+
+                // Check if the data in the cookie matches the requested topic and product type
+                if (
+                    cookieData.topicId === topicId &&
+                    cookieData.product.toLowerCase().startsWith(productType)
+                ) {
+                    return NextResponse.json({
+                        completed: true,
+                        selectedOptions: cookieData.selectedOptions || []
+                    }, { status: 200 });
+                }
+            } catch (err) {
+                console.error('Failed to parse cookie data:', err);
+            }
+        }
+
+        // If no valid data in cookies, fall back to the database
         const user = await User.findById(userId);
 
         if (!user) {
@@ -50,7 +73,7 @@ export async function GET(req: NextRequest) {
                 selectedOptions: []
             }, { status: 200 });
         }
-
+        
         return NextResponse.json({
             completed: true,
             selectedOptions: currentTopic.selectedOptions || []
