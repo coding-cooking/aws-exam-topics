@@ -26,17 +26,13 @@ export async function GET(req: NextRequest) {
         const progressCookie = (await cookies()).get('user-progress');
 
         if (progressCookie) {
-            console.log('progressCookie', progressCookie)
             try {
                 const cookieData = JSON.parse(progressCookie.value);
 
                 // Check if the data in the cookie matches the requested topic and product type
                 const topicCookieExists = cookieData.findIndex((item: ProgressCookieItemType) => item.topicId === topicId && item.product.toLowerCase().startsWith(productType))
 
-                if (topicCookieExists > -1
-                    // cookieData.topicId === topicId &&
-                    // cookieData.product.toLowerCase().startsWith(productType)
-                ) {
+                if (topicCookieExists > -1) {
                     return NextResponse.json({
                         completed: true,
                         selectedOptions: cookieData[topicCookieExists].selectedOptions || []
