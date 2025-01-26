@@ -24,15 +24,13 @@ export default async function TopicPage({ params }: { params: Promise<{ handle: 
         console.log('NEXTAUTH_URL:', process.env.NEXTAUTH_URL);
         console.log('Environment:', process.env.NODE_ENV);
 
-        let sessionResponse;
+        let session;
         try {
-            sessionResponse = await fetch('/api/auth/session');
-            console.log('Raw session response:', await sessionResponse.text());
-        } catch (e) {
-            console.error('Session fetch error:', e);
+            session = await getServerSession(options);
+        } catch (error) {
+            console.error('Error fetching session:', error);
+            throw new Error('Session fetch failed');
         }
-        
-        const session = await getServerSession(options);
         console.log('Session debug:', {
             exists: !!session,
             user: session?.user ? 'exists' : 'null',
