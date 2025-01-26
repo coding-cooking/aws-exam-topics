@@ -122,7 +122,7 @@ export const options: NextAuthOptions = {
                 return session;
             } catch (error) {
                 console.error('Session callback error:', error);
-                throw error;
+                return session;
             }
         },
         async signIn({

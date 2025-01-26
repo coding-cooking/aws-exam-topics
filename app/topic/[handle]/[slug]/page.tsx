@@ -23,6 +23,15 @@ export default async function TopicPage({ params }: { params: Promise<{ handle: 
         const { handle, slug } = await params;
         console.log('NEXTAUTH_URL:', process.env.NEXTAUTH_URL);
         console.log('Environment:', process.env.NODE_ENV);
+
+        let sessionResponse;
+        try {
+            sessionResponse = await fetch('/api/auth/session');
+            console.log('Raw session response:', await sessionResponse.text());
+        } catch (e) {
+            console.error('Session fetch error:', e);
+        }
+        
         const session = await getServerSession(options);
         console.log('Session debug:', {
             exists: !!session,
