@@ -21,8 +21,14 @@ export default async function TopicPage({ params }: { params: Promise<{ handle: 
     try {
 
         const { handle, slug } = await params;
+        console.log('NEXTAUTH_URL:', process.env.NEXTAUTH_URL);
+        console.log('Environment:', process.env.NODE_ENV);
         const session = await getServerSession(options);
-        console.log('session is null or not', session)
+        console.log('Session debug:', {
+            exists: !!session,
+            user: session?.user ? 'exists' : 'null',
+            expires: session?.expires
+        });
         if (!session || !session.user) {
             console.log('No valid session found');
             redirect('/api/auth/signin');
